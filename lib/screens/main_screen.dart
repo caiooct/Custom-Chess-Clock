@@ -59,9 +59,8 @@ class _TimerButton extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     "5:00",
-                    style: textTheme.displayLarge?.copyWith(
-                      color: Colors.white,
-                    ),
+                    style:
+                        textTheme.displayLarge?.copyWith(color: Colors.white),
                   ),
                 ),
                 Align(

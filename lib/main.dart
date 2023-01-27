@@ -1,6 +1,7 @@
-import 'package:custom_chess_clock/main_screen.dart';
-import 'package:custom_chess_clock/theme/theme.dart';
 import 'package:flutter/material.dart';
+
+import 'screens/main_screen.dart';
+import 'theme/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
