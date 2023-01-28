@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
+import 'clock_screen.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -139,7 +141,11 @@ class _OptionsBar extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ClockScreen()),
+                );
+              },
               icon: const _CustomSettingsIconButton(),
             ),
             IconButton(
