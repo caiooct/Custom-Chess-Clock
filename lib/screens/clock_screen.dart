@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'new_clock/new_clock_screen.dart';
+
 class ClockScreen extends StatelessWidget {
   const ClockScreen({Key? key}) : super(key: key);
 
@@ -43,7 +45,11 @@ class ClockScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: colorScheme.primaryContainer,
         label: const Text("New Clock"),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const NewClockScreen()),
+          );
+        },
         tooltip: 'New Clock',
         icon: const Icon(Icons.add),
       ),
