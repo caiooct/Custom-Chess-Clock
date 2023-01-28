@@ -17,5 +17,6 @@ final ThemeData lightTheme = ThemeData(
     surface: surface,
     onSurface: onSurface,
     inversePrimary: inversePrimary,
+    primaryContainer: primaryContainer,
   ),
 );
