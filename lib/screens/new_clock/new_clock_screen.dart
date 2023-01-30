@@ -241,12 +241,17 @@ class _PlayerConfigurationViewState extends State<_PlayerConfigurationView> {
               child: SegmentedButton<TimingMethodEnum>(
                 segments: const [
                   ButtonSegment(
-                      value: TimingMethodEnum.delay, label: Text("Delay")),
+                    value: TimingMethodEnum.delay,
+                    label: Text("Delay"),
+                  ),
                   ButtonSegment(
-                      value: TimingMethodEnum.bronstein,
-                      label: Text("Bronstein")),
+                    value: TimingMethodEnum.bronstein,
+                    label: Text("Bronstein"),
+                  ),
                   ButtonSegment(
-                      value: TimingMethodEnum.fischer, label: Text("Fischer")),
+                    value: TimingMethodEnum.fischer,
+                    label: Text("Fischer"),
+                  ),
                 ],
                 selected: {timingMethod},
                 onSelectionChanged: (newSelection) {
