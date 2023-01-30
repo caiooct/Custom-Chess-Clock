@@ -21,13 +21,21 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Column(
-        children: [
-          const _TimerButton(color: Colors.red),
-          _OptionsBar(),
-          const _TimerButton(isAtBottom: true, color: Colors.blue),
-        ],
+    return FocusScope(
+      autofocus: true,
+      onFocusChange: (_) async {
+        if ((await FullScreen.isFullScreen) == false) {
+          FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
+        }
+      },
+      child: Material(
+        child: Column(
+          children: [
+            const _TimerButton(color: Colors.red),
+            _OptionsBar(),
+            const _TimerButton(isAtBottom: true, color: Colors.blue),
+          ],
+        ),
       ),
     );
   }

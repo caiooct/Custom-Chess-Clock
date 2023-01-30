@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:fullscreen/fullscreen.dart';
 
 import 'new_clock/new_clock_screen.dart';
 
-class ClockScreen extends StatelessWidget {
+class ClockScreen extends StatefulWidget {
   const ClockScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ClockScreen> createState() => _ClockScreenState();
+}
+
+class _ClockScreenState extends State<ClockScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FullScreen.exitFullScreen();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +34,7 @@ class ClockScreen extends StatelessWidget {
         backgroundColor: colorScheme.primary,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {},
             icon: Icon(
               Icons.settings,
               color: colorScheme.onPrimary,
