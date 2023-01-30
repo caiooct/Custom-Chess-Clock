@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
 import 'new_clock/new_clock_screen.dart';
+import 'settings_screen.dart';
 
 class ClocksListScreen extends StatefulWidget {
   const ClocksListScreen({Key? key}) : super(key: key);
@@ -34,7 +35,11 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
         backgroundColor: colorScheme.primary,
         actions: [
           IconButton(
-            onPressed: () async {},
+            onPressed: () async {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
             icon: Icon(
               Icons.settings,
               color: colorScheme.onPrimary,
