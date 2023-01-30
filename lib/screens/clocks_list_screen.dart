@@ -3,14 +3,14 @@ import 'package:fullscreen/fullscreen.dart';
 
 import 'new_clock/new_clock_screen.dart';
 
-class ClockScreen extends StatefulWidget {
-  const ClockScreen({Key? key}) : super(key: key);
+class ClocksListScreen extends StatefulWidget {
+  const ClocksListScreen({Key? key}) : super(key: key);
 
   @override
-  State<ClockScreen> createState() => _ClockScreenState();
+  State<ClocksListScreen> createState() => _ClocksListScreenState();
 }
 
-class _ClockScreenState extends State<ClockScreen> {
+class _ClocksListScreenState extends State<ClocksListScreen> {
   @override
   void initState() {
     super.initState();

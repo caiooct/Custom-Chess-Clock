@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
-import 'clock_screen.dart';
+import 'clocks_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -151,7 +151,7 @@ class _OptionsBar extends StatelessWidget {
             IconButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ClockScreen()),
+                  MaterialPageRoute(builder: (_) => const ClocksListScreen()),
                 );
               },
               icon: const _CustomSettingsIconButton(),
