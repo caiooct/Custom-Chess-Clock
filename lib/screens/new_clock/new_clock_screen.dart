@@ -181,11 +181,9 @@ class _PlayerConfigurationViewState extends State<_PlayerConfigurationView> {
           ),
         ),
         const SizedBox(height: 16),
-        Text("Increment", style: textTheme.titleMedium),
-        const SizedBox(height: 8),
         Row(
           children: [
-            const Text("Player 1"),
+            Text("Increment", style: textTheme.titleMedium),
             const Spacer(),
             Row(
               children: const [
