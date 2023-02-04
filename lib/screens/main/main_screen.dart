@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
-import 'clocks_list_screen.dart';
+import '../clocks_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
