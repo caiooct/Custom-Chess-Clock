@@ -3,7 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
+import '../../data/time_control.dart';
+import '../../data/timing_methods_enum.dart';
 import '../clocks_list_screen.dart';
+import 'main_view_model.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -13,6 +16,19 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final viewModel = MainViewModel(
+    const TimeControl(
+      timeInSeconds: 60,
+      timingMethod: TimingMethodEnum.delay,
+      incrementInSeconds: 0,
+    ),
+    const TimeControl(
+      timeInSeconds: 60,
+      timingMethod: TimingMethodEnum.delay,
+      incrementInSeconds: 0,
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -31,9 +47,16 @@ class _MainScreenState extends State<MainScreen> {
       child: Material(
         child: Column(
           children: [
-            const _TimerButton(color: Colors.red),
-            _OptionsBar(),
-            const _TimerButton(isAtBottom: true, color: Colors.blue),
+            _TimerButton(
+              color: Colors.red,
+              viewModel: viewModel,
+            ),
+            _OptionsBar(viewModel: viewModel),
+            _TimerButton(
+              isAtBottom: true,
+              color: Colors.blue,
+              viewModel: viewModel,
+            ),
           ],
         ),
       ),
@@ -44,10 +67,12 @@ class _MainScreenState extends State<MainScreen> {
 class _TimerButton extends StatelessWidget {
   final Color color;
   final bool isAtBottom;
+  final MainViewModel viewModel;
 
   const _TimerButton({
     required this.color,
     this.isAtBottom = false,
+    required this.viewModel,
   });
 
   @override
@@ -56,7 +81,7 @@ class _TimerButton extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Expanded(
       child: InkWell(
-        onTap: () {},
+        onTap: () => viewModel.onPressedTimerButton(isAtBottom),
         child: Transform.rotate(
           angle: isAtBottom ? 0 : pi,
           child: Ink(
@@ -67,20 +92,36 @@ class _TimerButton extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    "5:00",
-                    style:
-                        textTheme.displayLarge?.copyWith(color: Colors.white),
+                  child: ValueListenableBuilder(
+                    valueListenable: isAtBottom && viewModel.isBottomTimerWhite
+                        ? viewModel.whiteTimer
+                        : viewModel.blackTimer,
+                    builder: (_, value, __) {
+                      return Text(
+                        value.toString(),
+                        style: textTheme.displayLarge?.copyWith(
+                          color: Colors.white,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Move: 0",
-                      style:
-                          textTheme.labelLarge?.copyWith(color: Colors.white),
+                    child: ValueListenableBuilder(
+                      valueListenable:
+                          isAtBottom && viewModel.isBottomTimerWhite
+                              ? viewModel.countMovesWhite
+                              : viewModel.countMovesBlack,
+                      builder: (_, value, __) {
+                        return Text(
+                          "Move: $value",
+                          style: textTheme.labelLarge
+                              ?.copyWith(color: Colors.white),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -122,6 +163,10 @@ class _TimerButton extends StatelessWidget {
 }
 
 class _OptionsBar extends StatelessWidget {
+  final MainViewModel viewModel;
+
+  const _OptionsBar({required this.viewModel});
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -141,12 +186,23 @@ class _OptionsBar extends StatelessWidget {
                 color: colorScheme.onPrimary,
               ),
             ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.play_circle_outline,
-                color: colorScheme.onPrimary,
-              ),
+            ValueListenableBuilder(
+              valueListenable: viewModel.isPaused,
+              builder: (_, value, __) {
+                return IconButton(
+                  onPressed: value
+                      ? viewModel.hasStarted
+                          ? viewModel.resume
+                          : viewModel.startGame
+                      : viewModel.pause,
+                  icon: Icon(
+                    value
+                        ? Icons.play_circle_outline
+                        : Icons.pause_circle_outline,
+                    color: colorScheme.onPrimary,
+                  ),
+                );
+              },
             ),
             IconButton(
               onPressed: () {
