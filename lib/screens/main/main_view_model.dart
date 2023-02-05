@@ -43,12 +43,14 @@ class MainViewModel extends ChangeNotifier {
         );
 
   void _decrementWhiteTime() {
-    whiteTimer.value = whiteTimer.value - const Duration(seconds: 1);
+    whiteTimer.value =
+        whiteTimer.value - const Duration(milliseconds: _decrement);
     notifyListeners();
   }
 
   void _decrementBlackTime() {
-    blackTimer.value = blackTimer.value - const Duration(seconds: 1);
+    blackTimer.value =
+        blackTimer.value - const Duration(milliseconds: _decrement);
     notifyListeners();
   }
 
@@ -72,7 +74,7 @@ class MainViewModel extends ChangeNotifier {
 
   void _setUpTimer() {
     _timer = Timer.periodic(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: _decrement),
       (_) {
         if (whiteTimer.value == Duration.zero ||
             blackTimer.value == Duration.zero) {
@@ -117,4 +119,6 @@ class MainViewModel extends ChangeNotifier {
       _isBlackTurn = false;
     }
   }
+
+  static const int _decrement = 100;
 }
