@@ -44,18 +44,37 @@ class _MainScreenState extends State<MainScreen> {
           FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
         }
       },
-      child: Material(
-        child: Column(
+      child: Scaffold(
+        body: Stack(
           children: [
-            _TimerButton(
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: double.infinity,
               color: Colors.red,
-              viewModel: viewModel,
             ),
-            _OptionsBar(viewModel: viewModel),
-            _TimerButton(
-              isAtBottom: true,
-              color: Colors.blue,
-              viewModel: viewModel,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: double.infinity,
+                color: Colors.blue,
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  _TimerButton(
+                    color: Colors.red,
+                    viewModel: viewModel,
+                  ),
+                  _OptionsBar(viewModel: viewModel),
+                  _TimerButton(
+                    isAtBottom: true,
+                    color: Colors.blue,
+                    viewModel: viewModel,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
