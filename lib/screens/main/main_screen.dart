@@ -47,34 +47,19 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         body: Stack(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.5,
-              width: double.infinity,
-              color: Colors.red,
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                width: double.infinity,
-                color: Colors.blue,
-              ),
-            ),
-            SafeArea(
-              child: Column(
-                children: [
-                  _TimerButton(
-                    color: Colors.red,
-                    viewModel: viewModel,
-                  ),
-                  _OptionsBar(viewModel: viewModel),
-                  _TimerButton(
-                    isAtBottom: true,
-                    color: Colors.blue,
-                    viewModel: viewModel,
-                  ),
-                ],
-              ),
+            Column(
+              children: [
+                _TimerButton(
+                  color: Colors.red,
+                  viewModel: viewModel,
+                ),
+                _OptionsBar(viewModel: viewModel),
+                _TimerButton(
+                  isAtBottom: true,
+                  color: Colors.grey,
+                  viewModel: viewModel,
+                ),
+              ],
             ),
           ],
         ),
@@ -145,7 +130,11 @@ class _TimerButton extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
+                  padding: EdgeInsets.only(
+                    bottom: isAtBottom
+                        ? MediaQuery.of(context).padding.bottom
+                        : MediaQuery.of(context).padding.top,
+                  ),
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
