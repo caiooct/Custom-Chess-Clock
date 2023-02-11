@@ -46,9 +46,10 @@ class _MainScreenState extends State<MainScreen> {
         }
       },
       child: Scaffold(
-        body: Stack(
-          children: [
-            Column(
+        body: ValueListenableBuilder(
+          valueListenable: viewModel.gameState,
+          builder: (context, state, _) {
+            return Column(
               children: [
                 _TimerButton(
                   color: Colors.black,
@@ -61,8 +62,8 @@ class _MainScreenState extends State<MainScreen> {
                   viewModel: viewModel,
                 ),
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -180,69 +181,65 @@ class _OptionsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    Widget restartButton = IconButton(
+      onPressed: () {},
+      icon: Icon(
+        Icons.replay,
+        color: colorScheme.onPrimary,
+      ),
+    );
+
+    VoidCallback onPressed;
+    if (viewModel.gameState.value.isInitial) {
+      onPressed = viewModel.startGame;
+    } else if (viewModel.gameState.value.isPaused) {
+      onPressed = viewModel.resume;
+    } else {
+      onPressed = viewModel.pause;
+    }
+    Widget playOrPauseButton = IconButton(
+      onPressed: onPressed,
+      icon: Icon(
+        viewModel.gameState.value.isNotRunning
+            ? Icons.play_circle_outline
+            : Icons.pause_circle_outline,
+        color: colorScheme.onPrimary,
+      ),
+    );
+
+    Widget clocksScreenButton = IconButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const ClocksListScreen(),
+          ),
+        );
+      },
+      icon: const _CustomSettingsIconButton(),
+    );
+
+    Widget toggleVolumeButton = IconButton(
+      onPressed: () {},
+      icon: Icon(
+        Icons.volume_up,
+        color: colorScheme.onPrimary,
+      ),
+    );
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colorScheme.primary,
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ValueListenableBuilder(
-          valueListenable: viewModel.gameState,
-          builder: (_, state, __) {
-            Widget restartButton = IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.replay,
-                color: colorScheme.onPrimary,
-              ),
-            );
-
-            VoidCallback onPressed;
-            if (state.isInitial) {
-              onPressed = viewModel.startGame;
-            } else if (state.isPaused) {
-              onPressed = viewModel.resume;
-            } else {
-              onPressed = viewModel.pause;
-            }
-            Widget playOrPauseButton = IconButton(
-              onPressed: onPressed,
-              icon: Icon(
-                state.isNotRunning
-                    ? Icons.play_circle_outline
-                    : Icons.pause_circle_outline,
-                color: colorScheme.onPrimary,
-              ),
-            );
-
-            Widget clocksScreenButton = IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const ClocksListScreen(),
-                  ),
-                );
-              },
-              icon: const _CustomSettingsIconButton(),
-            );
-
-            Widget toggleVolumeButton = IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.volume_up,
-                color: colorScheme.onPrimary,
-              ),
-            );
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                restartButton,
-                if (state.isNotEnded) playOrPauseButton,
-                clocksScreenButton,
-                toggleVolumeButton,
-              ],
-            );
-          },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            restartButton,
+            if (viewModel.gameState.value.isNotEnded) playOrPauseButton,
+            clocksScreenButton,
+            toggleVolumeButton,
+          ],
         ),
       ),
     );
