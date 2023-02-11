@@ -7,15 +7,17 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late MainViewModel viewModel;
+  const int whiteTimeInSeconds = 3;
+  const int blackTimeInSeconds = 3;
   setUp(() {
     viewModel = MainViewModel(
       const TimeControl(
-        timeInSeconds: 60,
+        timeInSeconds: whiteTimeInSeconds,
         timingMethod: TimingMethodEnum.delay,
         incrementInSeconds: 0,
       ),
       const TimeControl(
-        timeInSeconds: 60,
+        timeInSeconds: blackTimeInSeconds,
         timingMethod: TimingMethodEnum.delay,
         incrementInSeconds: 0,
       ),
@@ -58,6 +60,12 @@ void main() {
         expect(
             blackTimeBeforePause, equals(viewModel.blackTimer.value.inSeconds));
       });
+
+      test("should end the game", () async {
+        await Future.delayed(const Duration(seconds: blackTimeInSeconds + 1));
+        expect(viewModel.gameState.value, GameState.ended);
+        expect(viewModel.whiteTimer.value, lessThanOrEqualTo(Duration.zero));
+      });
     });
 
     group("Game is paused", () {
@@ -91,10 +99,13 @@ void main() {
         viewModel.onPressedTimerButton(true);
       });
 
-      test("should switch from Black to White's turn when Black presses the button", () {
+      test(
+          "should switch from Black to White's turn when Black presses the button",
+          () {
         int countBeforeMove = viewModel.countMovesBlack.value;
         viewModel.onPressedTimerButton(false);
-        expect(viewModel.countMovesBlack.value, greaterThanOrEqualTo(countBeforeMove));
+        expect(viewModel.countMovesBlack.value,
+            greaterThanOrEqualTo(countBeforeMove));
         expect(viewModel.isWhiteTurn, isTrue);
         expect(viewModel.isBlackTurn, isFalse);
       });
@@ -113,9 +124,10 @@ void main() {
             blackTimeBeforePause, equals(viewModel.blackTimer.value.inSeconds));
       });
 
-      test("should end the game", () {
-        viewModel.endGame();
+      test("should end the game", () async {
+        await Future.delayed(const Duration(seconds: blackTimeInSeconds + 1));
         expect(viewModel.gameState.value, GameState.ended);
+        expect(viewModel.blackTimer.value, lessThanOrEqualTo(Duration.zero));
       });
     });
 

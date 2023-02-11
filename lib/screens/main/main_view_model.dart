@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../common/extensions/on_int.dart';
+import '../../data/time_control.dart';
+
 enum GameState {
   initial,
   started,
@@ -39,20 +42,16 @@ class MainViewModel extends ChangeNotifier {
   bool get isBlackTurn => _isBlackTurn;
   bool get isBottomTimerWhite => _isBottomTimerWhite;
 
-  MainViewModel(timeControlWhite, timeControlBlack)
-      : _whiteTimer = ValueNotifier(
-          Duration(seconds: timeControlWhite.timeInSeconds),
-        ),
-        _blackTimer = ValueNotifier(
-          Duration(seconds: timeControlBlack.timeInSeconds),
-        );
+  MainViewModel(TimeControl timeControlWhite, TimeControl timeControlBlack)
+      : _whiteTimer = ValueNotifier(timeControlWhite.timeInSeconds.s),
+        _blackTimer = ValueNotifier(timeControlBlack.timeInSeconds.s);
 
   void _decrementWhiteTime() {
-    whiteTimer.value -= const Duration(milliseconds: _decrement);
+    whiteTimer.value -= _decrement.ms;
   }
 
   void _decrementBlackTime() {
-    blackTimer.value -= const Duration(milliseconds: _decrement);
+    blackTimer.value -= _decrement.ms;
   }
 
   void startGame() {
@@ -79,7 +78,7 @@ class MainViewModel extends ChangeNotifier {
 
   void _setUpTimer() {
     _timer = Timer.periodic(
-      const Duration(milliseconds: _decrement),
+      _decrement.ms,
       (_) {
         if (whiteTimer.value == Duration.zero ||
             blackTimer.value == Duration.zero) {
