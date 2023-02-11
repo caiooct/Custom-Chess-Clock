@@ -73,6 +73,8 @@ class MainViewModel extends ChangeNotifier {
 
   void endGame() {
     gameState.value = GameState.ended;
+    _isWhiteTurn = false;
+    _isBlackTurn = false;
     _timer.cancel();
   }
 

@@ -65,6 +65,8 @@ void main() {
         await Future.delayed(const Duration(seconds: blackTimeInSeconds + 1));
         expect(viewModel.gameState.value, GameState.ended);
         expect(viewModel.whiteTimer.value, lessThanOrEqualTo(Duration.zero));
+        expect(viewModel.isBlackTurn, isFalse);
+        expect(viewModel.isWhiteTurn, isFalse);
       });
     });
 
@@ -128,6 +130,8 @@ void main() {
         await Future.delayed(const Duration(seconds: blackTimeInSeconds + 1));
         expect(viewModel.gameState.value, GameState.ended);
         expect(viewModel.blackTimer.value, lessThanOrEqualTo(Duration.zero));
+        expect(viewModel.isBlackTurn, isFalse);
+        expect(viewModel.isWhiteTurn, isFalse);
       });
     });
 
