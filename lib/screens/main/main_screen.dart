@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
+import '../../common/extensions/on_duration.dart';
 import '../../data/time_control.dart';
 import '../../data/timing_methods_enum.dart';
 import '../clocks_list_screen.dart';
@@ -50,13 +51,13 @@ class _MainScreenState extends State<MainScreen> {
             Column(
               children: [
                 _TimerButton(
-                  color: Colors.red,
+                  color: Colors.black,
                   viewModel: viewModel,
                 ),
                 _OptionsBar(viewModel: viewModel),
                 _TimerButton(
                   isAtBottom: true,
-                  color: Colors.grey,
+                  color: Colors.white,
                   viewModel: viewModel,
                 ),
               ],
@@ -81,8 +82,8 @@ class _TimerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final onColor = color == Colors.black ? Colors.white : Colors.black;
     return Expanded(
       child: InkWell(
         onTap: () => viewModel.onPressedTimerButton(isAtBottom),
@@ -102,9 +103,9 @@ class _TimerButton extends StatelessWidget {
                         : viewModel.blackTimer,
                     builder: (_, value, __) {
                       return Text(
-                        value.toString(),
+                        value.timeToString(),
                         style: textTheme.displayLarge?.copyWith(
-                          color: Colors.white,
+                          color: onColor,
                         ),
                       );
                     },
@@ -122,8 +123,9 @@ class _TimerButton extends StatelessWidget {
                       builder: (_, value, __) {
                         return Text(
                           "Move: $value",
-                          style: textTheme.labelLarge
-                              ?.copyWith(color: Colors.white),
+                          style: textTheme.labelLarge?.copyWith(
+                            color: onColor,
+                          ),
                         );
                       },
                     ),
@@ -145,7 +147,7 @@ class _TimerButton extends StatelessWidget {
                           icon: Icon(
                             Icons.timer_outlined,
                             size: 32,
-                            color: colorScheme.onPrimary,
+                            color: onColor,
                           ),
                         ),
                         const SizedBox(width: 64.0),
@@ -154,7 +156,7 @@ class _TimerButton extends StatelessWidget {
                           icon: Icon(
                             Icons.color_lens_outlined,
                             size: 32,
-                            color: colorScheme.onPrimary,
+                            color: onColor,
                           ),
                         ),
                       ],
