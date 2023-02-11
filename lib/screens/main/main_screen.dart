@@ -193,9 +193,9 @@ class _OptionsBar extends StatelessWidget {
     if (viewModel.gameState.value.isInitial) {
       onPressed = viewModel.startGame;
     } else if (viewModel.gameState.value.isPaused) {
-      onPressed = viewModel.resume;
+      onPressed = viewModel.resumeGame;
     } else {
-      onPressed = viewModel.pause;
+      onPressed = viewModel.pauseGame;
     }
     Widget playOrPauseButton = IconButton(
       onPressed: onPressed,

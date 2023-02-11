@@ -50,7 +50,7 @@ void main() {
       test("should pause", () async {
         var whiteTimeBeforePause = viewModel.whiteTimer.value.inSeconds;
         var blackTimeBeforePause = viewModel.blackTimer.value.inSeconds;
-        viewModel.pause();
+        viewModel.pauseGame();
         expect(viewModel.gameState.value, GameState.paused);
         expect(viewModel.isWhiteTurn, isTrue);
         expect(viewModel.isBlackTurn, isFalse);
@@ -75,13 +75,13 @@ void main() {
       late int blackTimeAfterPause;
       setUp(() {
         viewModel.startGame();
-        viewModel.pause();
+        viewModel.pauseGame();
         whiteTimeAfterPause = viewModel.whiteTimer.value.inSeconds;
         blackTimeAfterPause = viewModel.blackTimer.value.inSeconds;
       });
 
       test("should resume the game", () async {
-        viewModel.resume();
+        viewModel.resumeGame();
         expect(viewModel.gameState.value, GameState.running);
         expect(viewModel.isWhiteTurn, isTrue);
         expect(viewModel.isBlackTurn, isFalse);
@@ -115,7 +115,7 @@ void main() {
       test("should pause", () async {
         var whiteTimeBeforePause = viewModel.whiteTimer.value.inSeconds;
         var blackTimeBeforePause = viewModel.blackTimer.value.inSeconds;
-        viewModel.pause();
+        viewModel.pauseGame();
         expect(viewModel.gameState.value, GameState.paused);
         expect(viewModel.isWhiteTurn, isFalse);
         expect(viewModel.isBlackTurn, isTrue);
@@ -141,13 +141,13 @@ void main() {
       setUp(() {
         viewModel.startGame();
         viewModel.onPressedTimerButton(true);
-        viewModel.pause();
+        viewModel.pauseGame();
         whiteTimeAfterPause = viewModel.whiteTimer.value.inSeconds;
         blackTimeAfterPause = viewModel.blackTimer.value.inSeconds;
       });
 
       test("should resume the game", () async {
-        viewModel.resume();
+        viewModel.resumeGame();
         expect(viewModel.gameState.value, GameState.running);
         expect(viewModel.isWhiteTurn, isFalse);
         expect(viewModel.isBlackTurn, isTrue);

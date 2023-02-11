@@ -61,12 +61,12 @@ class MainViewModel extends ChangeNotifier {
     _setUpTimer();
   }
 
-  void pause() {
+  void pauseGame() {
     gameState.value = GameState.paused;
     _timer.cancel();
   }
 
-  void resume() {
+  void resumeGame() {
     gameState.value = GameState.running;
     _setUpTimer();
   }
