@@ -195,50 +195,63 @@ class _OptionsBar extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
+        child: ValueListenableBuilder(
+          valueListenable: viewModel.gameState,
+          builder: (_, state, __) {
+            Widget restartButton = IconButton(
               onPressed: () {},
               icon: Icon(
                 Icons.replay,
                 color: colorScheme.onPrimary,
               ),
-            ),
-            ValueListenableBuilder(
-              valueListenable: viewModel.isPaused,
-              builder: (_, value, __) {
-                return IconButton(
-                  onPressed: value
-                      ? viewModel.hasStarted
-                          ? viewModel.resume
-                          : viewModel.startGame
-                      : viewModel.pause,
-                  icon: Icon(
-                    value
-                        ? Icons.play_circle_outline
-                        : Icons.pause_circle_outline,
-                    color: colorScheme.onPrimary,
+            );
+
+            VoidCallback onPressed;
+            if (state.isInitial) {
+              onPressed = viewModel.startGame;
+            } else if (state.isPaused) {
+              onPressed = viewModel.resume;
+            } else {
+              onPressed = viewModel.pause;
+            }
+            Widget playOrPauseButton = IconButton(
+              onPressed: onPressed,
+              icon: Icon(
+                state.isNotRunning
+                    ? Icons.play_circle_outline
+                    : Icons.pause_circle_outline,
+                color: colorScheme.onPrimary,
+              ),
+            );
+
+            Widget clocksScreenButton = IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ClocksListScreen(),
                   ),
                 );
               },
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ClocksListScreen()),
-                );
-              },
               icon: const _CustomSettingsIconButton(),
-            ),
-            IconButton(
+            );
+
+            Widget toggleVolumeButton = IconButton(
               onPressed: () {},
               icon: Icon(
                 Icons.volume_up,
                 color: colorScheme.onPrimary,
               ),
-            ),
-          ],
+            );
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                restartButton,
+                if (state.isNotEnded) playOrPauseButton,
+                clocksScreenButton,
+                toggleVolumeButton,
+              ],
+            );
+          },
         ),
       ),
     );

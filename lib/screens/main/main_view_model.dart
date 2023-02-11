@@ -2,37 +2,42 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+enum GameState {
+  initial,
+  started,
+  paused,
+  running,
+  ended;
+
+  bool get isInitial => this == initial;
+  bool get isStarted => this == started;
+  bool get isPaused => this == paused;
+  bool get isRunning => this == running;
+  bool get isEnded => this == ended;
+  bool get isNotPaused => this != paused;
+  bool get isNotRunning => this != running;
+  bool get isNotEnded => this != ended;
+}
+
 class MainViewModel extends ChangeNotifier {
+  final ValueNotifier<GameState> gameState = ValueNotifier(GameState.initial);
   late final ValueNotifier<Duration> _whiteTimer;
   late final ValueNotifier<Duration> _blackTimer;
   final ValueNotifier<int> _countMovesWhite = ValueNotifier(0);
   final ValueNotifier<int> _countMovesBlack = ValueNotifier(0);
   late Timer _timer;
 
-  bool _hasStarted = false;
-  ValueNotifier<bool> isPaused = ValueNotifier(true);
   bool _isWhiteTurn = false;
   bool _isBlackTurn = false;
   final bool _isBottomTimerWhite = true;
 
   ValueNotifier<Duration> get whiteTimer => _whiteTimer;
-
   ValueNotifier<Duration> get blackTimer => _blackTimer;
-
   ValueNotifier<int> get countMovesWhite => _countMovesWhite;
-
   ValueNotifier<int> get countMovesBlack => _countMovesBlack;
-
-  bool get hasStarted => _hasStarted;
-
   bool get isWhiteTurn => _isWhiteTurn;
-
   bool get isBlackTurn => _isBlackTurn;
-
   bool get isBottomTimerWhite => _isBottomTimerWhite;
-
-  bool get isFirstMove =>
-      countMovesWhite.value == 0 && countMovesBlack.value == 0;
 
   MainViewModel(timeControlWhite, timeControlBlack)
       : _whiteTimer = ValueNotifier(
@@ -43,33 +48,33 @@ class MainViewModel extends ChangeNotifier {
         );
 
   void _decrementWhiteTime() {
-    whiteTimer.value =
-        whiteTimer.value - const Duration(milliseconds: _decrement);
-    notifyListeners();
+    whiteTimer.value -= const Duration(milliseconds: _decrement);
   }
 
   void _decrementBlackTime() {
-    blackTimer.value =
-        blackTimer.value - const Duration(milliseconds: _decrement);
-    notifyListeners();
+    blackTimer.value -= const Duration(milliseconds: _decrement);
   }
 
   void startGame() {
-    _hasStarted = true;
-    isPaused.value = false;
+    gameState.value = GameState.running;
     _isWhiteTurn = true;
     _isBlackTurn = false;
     _setUpTimer();
   }
 
   void pause() {
-    isPaused.value = true;
+    gameState.value = GameState.paused;
     _timer.cancel();
   }
 
   void resume() {
-    isPaused.value = false;
+    gameState.value = GameState.running;
     _setUpTimer();
+  }
+
+  void endGame() {
+    gameState.value = GameState.ended;
+    _timer.cancel();
   }
 
   void _setUpTimer() {
@@ -78,18 +83,17 @@ class MainViewModel extends ChangeNotifier {
       (_) {
         if (whiteTimer.value == Duration.zero ||
             blackTimer.value == Duration.zero) {
-          _timer.cancel();
-          return;
+          endGame();
+        } else if (gameState.value.isNotPaused) {
+          isWhiteTurn ? _decrementWhiteTime() : _decrementBlackTime();
         }
-        if (isPaused.value) return;
-        isWhiteTurn ? _decrementWhiteTime() : _decrementBlackTime();
       },
     );
   }
 
   void onPressedTimerButton(bool isBottomButton) {
-    if (!hasStarted) startGame();
-    if (!isPaused.value) {
+    if (gameState.value.isInitial) startGame();
+    if (gameState.value.isRunning) {
       isBottomButton && isBottomTimerWhite
           ? _onPressedWhite()
           : _onPressedBlack();
