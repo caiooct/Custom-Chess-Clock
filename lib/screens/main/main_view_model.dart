@@ -42,7 +42,9 @@ class MainViewModel extends ChangeNotifier {
   bool get isBlackTurn => _isBlackTurn;
   bool get isBottomTimerWhite => _isBottomTimerWhite;
 
-  MainViewModel(TimeControl timeControlWhite, TimeControl timeControlBlack)
+  @visibleForTesting
+  TimeControl timeControlWhite, timeControlBlack;
+  MainViewModel(this.timeControlWhite, this.timeControlBlack)
       : _whiteTimer = ValueNotifier(timeControlWhite.timeInSeconds.s),
         _blackTimer = ValueNotifier(timeControlBlack.timeInSeconds.s);
 
@@ -75,6 +77,15 @@ class MainViewModel extends ChangeNotifier {
     gameState.value = GameState.ended;
     _isWhiteTurn = false;
     _isBlackTurn = false;
+    _timer.cancel();
+  }
+
+  void restartGame() {
+    gameState.value = GameState.initial;
+    countMovesWhite.value = 0;
+    countMovesBlack.value = 0;
+    _whiteTimer.value = timeControlWhite.timeInSeconds.s;
+    _blackTimer.value = timeControlBlack.timeInSeconds.s;
     _timer.cancel();
   }
 

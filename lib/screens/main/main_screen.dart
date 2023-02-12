@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fullscreen/fullscreen.dart';
 
 import '../../common/extensions/on_duration.dart';
+import '../../common/extensions/on_string.dart';
 import '../../data/time_control.dart';
 import '../../data/timing_methods_enum.dart';
 import '../clocks_list_screen.dart';
@@ -182,7 +183,33 @@ class _OptionsBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     Widget restartButton = IconButton(
-      onPressed: () {},
+      onPressed: () {
+        if (viewModel.gameState.value.isNotEnded) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: "Reset the clock?".toText(),
+                actions: [
+                  TextButton(
+                    onPressed: Navigator.of(context).pop,
+                    child: "Cancel".toText(),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      viewModel.restartGame();
+                      Navigator.of(context).pop();
+                    },
+                    child: "Reset".toText(),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          viewModel.restartGame();
+        }
+      },
       icon: Icon(
         Icons.replay,
         color: colorScheme.onPrimary,

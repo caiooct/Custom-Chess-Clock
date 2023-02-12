@@ -1,5 +1,6 @@
 // ignore_for_file: require_trailing_commas
 
+import 'package:custom_chess_clock/common/extensions/on_int.dart';
 import 'package:custom_chess_clock/data/time_control.dart';
 import 'package:custom_chess_clock/data/timing_methods_enum.dart';
 import 'package:custom_chess_clock/screens/main/main_view_model.dart';
@@ -30,6 +31,18 @@ void main() {
     expect(viewModel.isWhiteTurn, isTrue);
     expect(viewModel.isBlackTurn, isFalse);
     expect(viewModel.isBottomTimerWhite, isTrue);
+  });
+
+  test('should restart to initial state', () {
+    viewModel.startGame();
+    viewModel.restartGame();
+    expect(viewModel.gameState.value, equals(GameState.initial));
+    expect(viewModel.countMovesWhite.value, equals(0));
+    expect(viewModel.countMovesBlack.value, equals(0));
+    expect(viewModel.whiteTimer.value,
+        equals(viewModel.timeControlWhite.timeInSeconds.s));
+    expect(viewModel.blackTimer.value,
+        equals(viewModel.timeControlBlack.timeInSeconds.s));
   });
 
   group("Given White's turn", () {
