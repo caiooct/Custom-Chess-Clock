@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fullscreen/fullscreen.dart';
 
 import '../../common/extensions/on_duration.dart';
 import '../../common/extensions/on_string.dart';
@@ -10,14 +9,9 @@ import '../../data/timing_methods_enum.dart';
 import '../clocks_list_screen.dart';
 import 'main_view_model.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class MainScreen extends StatelessWidget {
+  MainScreen({Key? key}) : super(key: key);
 
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
   final viewModel = MainViewModel(
     const TimeControl(
       timeInSeconds: 60,
@@ -32,40 +26,26 @@ class _MainScreenState extends State<MainScreen> {
   );
 
   @override
-  void initState() {
-    super.initState();
-    FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FocusScope(
-      autofocus: true,
-      onFocusChange: (_) async {
-        if ((await FullScreen.isFullScreen) == false) {
-          FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
-        }
-      },
-      child: Scaffold(
-        body: ValueListenableBuilder(
-          valueListenable: viewModel.gameState,
-          builder: (context, state, _) {
-            return Column(
-              children: [
-                _TimerButton(
-                  color: Colors.black,
-                  viewModel: viewModel,
-                ),
-                _OptionsBar(viewModel: viewModel),
-                _TimerButton(
-                  isAtBottom: true,
-                  color: Colors.white,
-                  viewModel: viewModel,
-                ),
-              ],
-            );
-          },
-        ),
+    return Scaffold(
+      body: ValueListenableBuilder(
+        valueListenable: viewModel.gameState,
+        builder: (context, state, _) {
+          return Column(
+            children: [
+              _TimerButton(
+                color: Colors.black,
+                viewModel: viewModel,
+              ),
+              _OptionsBar(viewModel: viewModel),
+              _TimerButton(
+                isAtBottom: true,
+                color: Colors.white,
+                viewModel: viewModel,
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fullscreen/fullscreen.dart';
+import 'package:flutter/services.dart';
 
 import 'new_clock/new_clock_screen.dart';
 import 'settings_screen.dart';
@@ -15,9 +15,13 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FullScreen.exitFullScreen();
-    });
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    super.dispose();
   }
 
   @override
