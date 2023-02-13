@@ -28,7 +28,8 @@ class MainViewModel extends ChangeNotifier {
   late final ValueNotifier<Duration> _blackTimer;
   final ValueNotifier<int> _countMovesWhite = ValueNotifier(0);
   final ValueNotifier<int> _countMovesBlack = ValueNotifier(0);
-  late Timer _timer;
+  @visibleForTesting
+  late Timer timer;
 
   bool _isWhiteTurn = false;
   bool _isBlackTurn = false;
@@ -65,7 +66,7 @@ class MainViewModel extends ChangeNotifier {
 
   void pauseGame() {
     gameState.value = GameState.paused;
-    _timer.cancel();
+    timer.cancel();
   }
 
   void resumeGame() {
@@ -77,7 +78,7 @@ class MainViewModel extends ChangeNotifier {
     gameState.value = GameState.ended;
     _isWhiteTurn = false;
     _isBlackTurn = false;
-    _timer.cancel();
+    timer.cancel();
   }
 
   void restartGame() {
@@ -86,11 +87,11 @@ class MainViewModel extends ChangeNotifier {
     countMovesBlack.value = 0;
     _whiteTimer.value = timeControlWhite.timeInSeconds.s;
     _blackTimer.value = timeControlBlack.timeInSeconds.s;
-    _timer.cancel();
+    timer.cancel();
   }
 
   void _setUpTimer() {
-    _timer = Timer.periodic(
+    timer = Timer.periodic(
       _decrement.ms,
       (_) {
         if (whiteTimer.value == Duration.zero ||

@@ -31,6 +31,7 @@ void main() {
     expect(viewModel.isWhiteTurn, isTrue);
     expect(viewModel.isBlackTurn, isFalse);
     expect(viewModel.isBottomTimerWhite, isTrue);
+    expect(viewModel.timer.isActive, isTrue);
   });
 
   test('should restart to initial state', () {
@@ -43,6 +44,7 @@ void main() {
         equals(viewModel.timeControlWhite.timeInSeconds.s));
     expect(viewModel.blackTimer.value,
         equals(viewModel.timeControlBlack.timeInSeconds.s));
+    expect(viewModel.timer.isActive, isFalse);
   });
 
   group("Given White's turn", () {
@@ -64,6 +66,7 @@ void main() {
         var whiteTimeBeforePause = viewModel.whiteTimer.value.inSeconds;
         var blackTimeBeforePause = viewModel.blackTimer.value.inSeconds;
         viewModel.pauseGame();
+        expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.paused);
         expect(viewModel.isWhiteTurn, isTrue);
         expect(viewModel.isBlackTurn, isFalse);
@@ -76,6 +79,7 @@ void main() {
 
       test("should end the game", () async {
         await Future.delayed(const Duration(seconds: blackTimeInSeconds + 1));
+        expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.ended);
         expect(viewModel.whiteTimer.value, lessThanOrEqualTo(Duration.zero));
         expect(viewModel.isBlackTurn, isFalse);
@@ -95,6 +99,7 @@ void main() {
 
       test("should resume the game", () async {
         viewModel.resumeGame();
+        expect(viewModel.timer.isActive, isTrue);
         expect(viewModel.gameState.value, GameState.running);
         expect(viewModel.isWhiteTurn, isTrue);
         expect(viewModel.isBlackTurn, isFalse);
@@ -129,6 +134,7 @@ void main() {
         var whiteTimeBeforePause = viewModel.whiteTimer.value.inSeconds;
         var blackTimeBeforePause = viewModel.blackTimer.value.inSeconds;
         viewModel.pauseGame();
+        expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.paused);
         expect(viewModel.isWhiteTurn, isFalse);
         expect(viewModel.isBlackTurn, isTrue);
@@ -141,6 +147,7 @@ void main() {
 
       test("should end the game", () async {
         await Future.delayed(const Duration(seconds: blackTimeInSeconds + 1));
+        expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.ended);
         expect(viewModel.blackTimer.value, lessThanOrEqualTo(Duration.zero));
         expect(viewModel.isBlackTurn, isFalse);
@@ -161,6 +168,7 @@ void main() {
 
       test("should resume the game", () async {
         viewModel.resumeGame();
+        expect(viewModel.timer.isActive, isTrue);
         expect(viewModel.gameState.value, GameState.running);
         expect(viewModel.isWhiteTurn, isFalse);
         expect(viewModel.isBlackTurn, isTrue);
