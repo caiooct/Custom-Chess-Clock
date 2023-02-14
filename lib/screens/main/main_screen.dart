@@ -65,88 +65,102 @@ class _TimerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final onColor = color == Colors.black ? Colors.white : Colors.black;
     return Expanded(
       child: InkWell(
         onTap: () => viewModel.onPressedTimerButton(isAtBottom),
         child: Transform.rotate(
           angle: isAtBottom ? 0 : pi,
-          child: Ink(
-            width: double.infinity,
-            height: double.infinity,
-            color: color,
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: ValueListenableBuilder(
-                    valueListenable: isAtBottom && viewModel.isBottomTimerWhite
-                        ? viewModel.whiteTimer
-                        : viewModel.blackTimer,
-                    builder: (_, value, __) {
-                      return Text(
-                        value.timeToString(),
-                        style: textTheme.displayLarge?.copyWith(
-                          color: onColor,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ValueListenableBuilder(
-                      valueListenable:
-                          isAtBottom && viewModel.isBottomTimerWhite
-                              ? viewModel.countMovesWhite
-                              : viewModel.countMovesBlack,
-                      builder: (_, value, __) {
-                        return Text(
-                          "Move: $value",
-                          style: textTheme.labelLarge?.copyWith(
-                            color: onColor,
-                          ),
-                        );
-                      },
+          child: ValueListenableBuilder(
+            valueListenable: viewModel.turnNotifier,
+            builder: (_, turn, __) {
+              var buttonColor = color;
+              if (viewModel.gameState.value.isRunning) {
+                buttonColor = (turn.isWhite && isAtBottom) ||
+                        (turn.isBlack && !isAtBottom)
+                    ? color
+                    : Colors.grey;
+              }
+              final onColor =
+                  color == Colors.black ? Colors.white : Colors.black;
+              return Ink(
+                width: double.infinity,
+                height: double.infinity,
+                color: buttonColor,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: ValueListenableBuilder(
+                        valueListenable:
+                            isAtBottom && viewModel.isBottomTimerWhite
+                                ? viewModel.whiteTimer
+                                : viewModel.blackTimer,
+                        builder: (_, value, __) {
+                          return Text(
+                            value.timeToString(),
+                            style: textTheme.displayLarge?.copyWith(
+                              color: onColor,
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: isAtBottom
-                        ? MediaQuery.of(context).padding.bottom
-                        : MediaQuery.of(context).padding.top,
-                  ),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.timer_outlined,
-                            size: 32,
-                            color: onColor,
-                          ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ValueListenableBuilder(
+                          valueListenable:
+                              isAtBottom && viewModel.isBottomTimerWhite
+                                  ? viewModel.countMovesWhite
+                                  : viewModel.countMovesBlack,
+                          builder: (_, value, __) {
+                            return Text(
+                              "Move: $value",
+                              style: textTheme.labelLarge?.copyWith(
+                                color: onColor,
+                              ),
+                            );
+                          },
                         ),
-                        const SizedBox(width: 64.0),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.color_lens_outlined,
-                            size: 32,
-                            color: onColor,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: isAtBottom
+                            ? MediaQuery.of(context).padding.bottom
+                            : MediaQuery.of(context).padding.top,
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.timer_outlined,
+                                size: 32,
+                                color: onColor,
+                              ),
+                            ),
+                            const SizedBox(width: 64.0),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.color_lens_outlined,
+                                size: 32,
+                                color: onColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),

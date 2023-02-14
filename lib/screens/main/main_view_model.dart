@@ -22,26 +22,35 @@ enum GameState {
   bool get isNotEnded => this != ended;
 }
 
+enum Player {
+  none,
+  white,
+  black;
+
+  bool get isNone => this == none;
+  bool get isWhite => this == white;
+  bool get isBlack => this == black;
+}
+
 class MainViewModel extends ChangeNotifier {
   final ValueNotifier<GameState> gameState = ValueNotifier(GameState.initial);
   late final ValueNotifier<Duration> _whiteTimer;
   late final ValueNotifier<Duration> _blackTimer;
   final ValueNotifier<int> _countMovesWhite = ValueNotifier(0);
   final ValueNotifier<int> _countMovesBlack = ValueNotifier(0);
+  final ValueNotifier<Player> turnNotifier = ValueNotifier(Player.none);
   @visibleForTesting
   late Timer timer;
 
-  bool _isWhiteTurn = false;
-  bool _isBlackTurn = false;
+
   final bool _isBottomTimerWhite = true;
 
   ValueNotifier<Duration> get whiteTimer => _whiteTimer;
   ValueNotifier<Duration> get blackTimer => _blackTimer;
   ValueNotifier<int> get countMovesWhite => _countMovesWhite;
   ValueNotifier<int> get countMovesBlack => _countMovesBlack;
-  bool get isWhiteTurn => _isWhiteTurn;
-  bool get isBlackTurn => _isBlackTurn;
   bool get isBottomTimerWhite => _isBottomTimerWhite;
+  Player get turn => turnNotifier.value;
 
   @visibleForTesting
   TimeControl timeControlWhite, timeControlBlack;
@@ -59,8 +68,7 @@ class MainViewModel extends ChangeNotifier {
 
   void startGame() {
     gameState.value = GameState.running;
-    _isWhiteTurn = true;
-    _isBlackTurn = false;
+    turnNotifier.value = Player.white;
     _setUpTimer();
   }
 
@@ -76,8 +84,7 @@ class MainViewModel extends ChangeNotifier {
 
   void endGame() {
     gameState.value = GameState.ended;
-    _isWhiteTurn = false;
-    _isBlackTurn = false;
+    turnNotifier.value = Player.none;
     timer.cancel();
   }
 
@@ -98,7 +105,7 @@ class MainViewModel extends ChangeNotifier {
             blackTimer.value == Duration.zero) {
           endGame();
         } else if (gameState.value.isNotPaused) {
-          isWhiteTurn ? _decrementWhiteTime() : _decrementBlackTime();
+          turn.isWhite ? _decrementWhiteTime() : _decrementBlackTime();
         }
       },
     );
@@ -114,26 +121,24 @@ class MainViewModel extends ChangeNotifier {
   }
 
   void _onPressedWhite() {
-    if (isWhiteTurn) {
+    if (turn.isWhite) {
       _switchTurns();
     }
   }
 
   void _onPressedBlack() {
-    if (isBlackTurn) {
+    if (turn.isBlack) {
       _switchTurns();
     }
   }
 
   void _switchTurns() {
-    if (isWhiteTurn) {
+    if (turn.isWhite) {
       countMovesWhite.value++;
-      _isWhiteTurn = false;
-      _isBlackTurn = true;
+      turnNotifier.value = Player.black;
     } else {
       countMovesBlack.value++;
-      _isWhiteTurn = true;
-      _isBlackTurn = false;
+      turnNotifier.value = Player.white;
     }
   }
 

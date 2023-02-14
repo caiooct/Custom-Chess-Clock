@@ -28,8 +28,8 @@ void main() {
   test("should start the game and White's timer", () {
     viewModel.startGame();
     expect(viewModel.gameState.value, GameState.running);
-    expect(viewModel.isWhiteTurn, isTrue);
-    expect(viewModel.isBlackTurn, isFalse);
+    expect(viewModel.turn.isWhite, isTrue);
+    expect(viewModel.turn.isBlack, isFalse);
     expect(viewModel.isBottomTimerWhite, isTrue);
     expect(viewModel.timer.isActive, isTrue);
   });
@@ -58,8 +58,8 @@ void main() {
         int countBeforeMove = viewModel.countMovesWhite.value;
         viewModel.onPressedTimerButton(true);
         expect(viewModel.countMovesWhite.value, equals(countBeforeMove + 1));
-        expect(viewModel.isWhiteTurn, isFalse);
-        expect(viewModel.isBlackTurn, isTrue);
+        expect(viewModel.turn.isWhite, isFalse);
+        expect(viewModel.turn.isBlack, isTrue);
       });
 
       test("should pause", () async {
@@ -68,8 +68,8 @@ void main() {
         viewModel.pauseGame();
         expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.paused);
-        expect(viewModel.isWhiteTurn, isTrue);
-        expect(viewModel.isBlackTurn, isFalse);
+        expect(viewModel.turn.isWhite, isTrue);
+        expect(viewModel.turn.isBlack, isFalse);
         await Future.delayed(const Duration(seconds: 2));
         expect(
             whiteTimeBeforePause, equals(viewModel.whiteTimer.value.inSeconds));
@@ -82,8 +82,8 @@ void main() {
         expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.ended);
         expect(viewModel.whiteTimer.value, lessThanOrEqualTo(Duration.zero));
-        expect(viewModel.isBlackTurn, isFalse);
-        expect(viewModel.isWhiteTurn, isFalse);
+        expect(viewModel.turn.isBlack, isFalse);
+        expect(viewModel.turn.isWhite, isFalse);
       });
     });
 
@@ -101,8 +101,8 @@ void main() {
         viewModel.resumeGame();
         expect(viewModel.timer.isActive, isTrue);
         expect(viewModel.gameState.value, GameState.running);
-        expect(viewModel.isWhiteTurn, isTrue);
-        expect(viewModel.isBlackTurn, isFalse);
+        expect(viewModel.turn.isWhite, isTrue);
+        expect(viewModel.turn.isBlack, isFalse);
         await Future.delayed(const Duration(seconds: 2));
         expect(
             whiteTimeAfterPause, isNot(viewModel.whiteTimer.value.inSeconds));
@@ -126,8 +126,8 @@ void main() {
         viewModel.onPressedTimerButton(false);
         expect(viewModel.countMovesBlack.value,
             greaterThanOrEqualTo(countBeforeMove));
-        expect(viewModel.isWhiteTurn, isTrue);
-        expect(viewModel.isBlackTurn, isFalse);
+        expect(viewModel.turn.isWhite, isTrue);
+        expect(viewModel.turn.isBlack, isFalse);
       });
 
       test("should pause", () async {
@@ -136,8 +136,8 @@ void main() {
         viewModel.pauseGame();
         expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.paused);
-        expect(viewModel.isWhiteTurn, isFalse);
-        expect(viewModel.isBlackTurn, isTrue);
+        expect(viewModel.turn.isWhite, isFalse);
+        expect(viewModel.turn.isBlack, isTrue);
         await Future.delayed(const Duration(seconds: 2));
         expect(
             whiteTimeBeforePause, equals(viewModel.whiteTimer.value.inSeconds));
@@ -150,8 +150,8 @@ void main() {
         expect(viewModel.timer.isActive, isFalse);
         expect(viewModel.gameState.value, GameState.ended);
         expect(viewModel.blackTimer.value, lessThanOrEqualTo(Duration.zero));
-        expect(viewModel.isBlackTurn, isFalse);
-        expect(viewModel.isWhiteTurn, isFalse);
+        expect(viewModel.turn.isBlack, isFalse);
+        expect(viewModel.turn.isWhite, isFalse);
       });
     });
 
@@ -170,8 +170,8 @@ void main() {
         viewModel.resumeGame();
         expect(viewModel.timer.isActive, isTrue);
         expect(viewModel.gameState.value, GameState.running);
-        expect(viewModel.isWhiteTurn, isFalse);
-        expect(viewModel.isBlackTurn, isTrue);
+        expect(viewModel.turn.isWhite, isFalse);
+        expect(viewModel.turn.isBlack, isTrue);
         await Future.delayed(const Duration(seconds: 2));
         expect(
             whiteTimeAfterPause, equals(viewModel.whiteTimer.value.inSeconds));
