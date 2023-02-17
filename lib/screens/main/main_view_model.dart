@@ -33,30 +33,33 @@ enum Player {
 }
 
 class MainViewModel extends ChangeNotifier {
-  final ValueNotifier<GameState> gameState = ValueNotifier(GameState.initial);
-  late final ValueNotifier<Duration> _whiteTimer;
-  late final ValueNotifier<Duration> _blackTimer;
-  final ValueNotifier<int> _countMovesWhite = ValueNotifier(0);
-  final ValueNotifier<int> _countMovesBlack = ValueNotifier(0);
-  final ValueNotifier<Player> turnNotifier = ValueNotifier(Player.none);
+  final ValueNotifier<GameState> _gameStateNotifier =
+      ValueNotifier(GameState.initial);
+  late final ValueNotifier<Duration> _whiteTimerNotifier;
+  late final ValueNotifier<Duration> _blackTimerNotifier;
+  final ValueNotifier<int> _countMovesWhiteNotifier = ValueNotifier(0);
+  final ValueNotifier<int> _countMovesBlackNotifier = ValueNotifier(0);
+  final ValueNotifier<Player> _turnNotifier = ValueNotifier(Player.none);
   @visibleForTesting
   late Timer timer;
 
-
   final bool _isBottomTimerWhite = true;
 
-  ValueNotifier<Duration> get whiteTimer => _whiteTimer;
-  ValueNotifier<Duration> get blackTimer => _blackTimer;
-  ValueNotifier<int> get countMovesWhite => _countMovesWhite;
-  ValueNotifier<int> get countMovesBlack => _countMovesBlack;
+  ValueNotifier<GameState> get gameState => _gameStateNotifier;
+  ValueNotifier<Duration> get whiteTimer => _whiteTimerNotifier;
+  ValueNotifier<Duration> get blackTimer => _blackTimerNotifier;
+  ValueNotifier<int> get countMovesWhite => _countMovesWhiteNotifier;
+  ValueNotifier<int> get countMovesBlack => _countMovesBlackNotifier;
   bool get isBottomTimerWhite => _isBottomTimerWhite;
+  ValueNotifier<Player> get turnNotifier => _turnNotifier;
   Player get turn => turnNotifier.value;
 
   @visibleForTesting
   TimeControl timeControlWhite, timeControlBlack;
+
   MainViewModel(this.timeControlWhite, this.timeControlBlack)
-      : _whiteTimer = ValueNotifier(timeControlWhite.timeInSeconds.s),
-        _blackTimer = ValueNotifier(timeControlBlack.timeInSeconds.s);
+      : _whiteTimerNotifier = ValueNotifier(timeControlWhite.timeInSeconds.s),
+        _blackTimerNotifier = ValueNotifier(timeControlBlack.timeInSeconds.s);
 
   void _decrementWhiteTime() {
     whiteTimer.value -= _decrement.ms;
@@ -92,8 +95,8 @@ class MainViewModel extends ChangeNotifier {
     gameState.value = GameState.initial;
     countMovesWhite.value = 0;
     countMovesBlack.value = 0;
-    _whiteTimer.value = timeControlWhite.timeInSeconds.s;
-    _blackTimer.value = timeControlBlack.timeInSeconds.s;
+    _whiteTimerNotifier.value = timeControlWhite.timeInSeconds.s;
+    _blackTimerNotifier.value = timeControlBlack.timeInSeconds.s;
     timer.cancel();
   }
 
