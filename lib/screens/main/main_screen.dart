@@ -29,7 +29,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ValueListenableBuilder(
-        valueListenable: viewModel.gameState,
+        valueListenable: viewModel.gameStateNotifier,
         builder: (context, state, _) {
           return Column(
             children: [
@@ -74,7 +74,7 @@ class _TimerButton extends StatelessWidget {
             valueListenable: viewModel.turnNotifier,
             builder: (_, turn, __) {
               var buttonColor = color;
-              if (viewModel.gameState.value.isRunning) {
+              if (viewModel.gameState.isRunning) {
                 buttonColor = (turn.isWhite && isAtBottom) ||
                         (turn.isBlack && !isAtBottom)
                     ? color
@@ -91,10 +91,9 @@ class _TimerButton extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: ValueListenableBuilder(
-                        valueListenable:
-                            isAtBottom && viewModel.isBottomTimerWhite
-                                ? viewModel.whiteTimer
-                                : viewModel.blackTimer,
+                        valueListenable: isAtBottom
+                            ? viewModel.whiteTimerNotifier
+                            : viewModel.blackTimerNotifier,
                         builder: (_, value, __) {
                           return Text(
                             value.timeToString(),
@@ -110,10 +109,9 @@ class _TimerButton extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: ValueListenableBuilder(
-                          valueListenable:
-                              isAtBottom && viewModel.isBottomTimerWhite
-                                  ? viewModel.countMovesWhite
-                                  : viewModel.countMovesBlack,
+                          valueListenable: isAtBottom
+                              ? viewModel.countMovesWhiteNotifier
+                              : viewModel.countMovesBlackNotifier,
                           builder: (_, value, __) {
                             return Text(
                               "Move: $value",
@@ -178,7 +176,7 @@ class _OptionsBar extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     Widget restartButton = IconButton(
       onPressed: () {
-        if (viewModel.gameState.value.isNotEnded) {
+        if (viewModel.gameState.isNotEnded) {
           showDialog(
             context: context,
             builder: (context) {
@@ -211,9 +209,9 @@ class _OptionsBar extends StatelessWidget {
     );
 
     VoidCallback onPressed;
-    if (viewModel.gameState.value.isInitial) {
+    if (viewModel.gameState.isInitial) {
       onPressed = viewModel.startGame;
-    } else if (viewModel.gameState.value.isPaused) {
+    } else if (viewModel.gameState.isPaused) {
       onPressed = viewModel.resumeGame;
     } else {
       onPressed = viewModel.pauseGame;
@@ -221,7 +219,7 @@ class _OptionsBar extends StatelessWidget {
     Widget playOrPauseButton = IconButton(
       onPressed: onPressed,
       icon: Icon(
-        viewModel.gameState.value.isNotRunning
+        viewModel.gameState.isNotRunning
             ? Icons.play_circle_outline
             : Icons.pause_circle_outline,
         color: colorScheme.onPrimary,
@@ -257,7 +255,7 @@ class _OptionsBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             restartButton,
-            if (viewModel.gameState.value.isNotEnded) playOrPauseButton,
+            if (viewModel.gameState.isNotEnded) playOrPauseButton,
             clocksScreenButton,
             toggleVolumeButton,
           ],
