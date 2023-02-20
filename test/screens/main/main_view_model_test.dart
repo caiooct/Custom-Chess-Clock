@@ -14,13 +14,13 @@ void main() {
     viewModel = MainViewModel(
       const TimeControl(
         timeInSeconds: whiteTimeInSeconds,
-        timingMethod: TimingMethodEnum.delay,
-        incrementInSeconds: 0,
+        timingMethod: TimingMethodEnum.fischer,
+        incrementInSeconds: 5,
       ),
       const TimeControl(
         timeInSeconds: blackTimeInSeconds,
-        timingMethod: TimingMethodEnum.delay,
-        incrementInSeconds: 0,
+        timingMethod: TimingMethodEnum.fischer,
+        incrementInSeconds: 5,
       ),
     );
   });
@@ -84,6 +84,17 @@ void main() {
         expect(viewModel.whiteTimer.value, lessThanOrEqualTo(Duration.zero));
         expect(viewModel.turn.isBlack, isFalse);
         expect(viewModel.turn.isWhite, isFalse);
+      });
+
+      test("should increment in fischer timing method", () {
+        var timeBeforeIncrement = viewModel.whiteTimer.value.inSeconds;
+        viewModel.onPressedTimerButton(true);
+        var timeAfterIncrement = viewModel.whiteTimer.value.inSeconds;
+
+        expect(
+            timeAfterIncrement,
+            equals(timeBeforeIncrement +
+                viewModel.timeControlWhite.incrementInSeconds));
       });
     });
 
@@ -152,6 +163,17 @@ void main() {
         expect(viewModel.blackTimer.value, lessThanOrEqualTo(Duration.zero));
         expect(viewModel.turn.isBlack, isFalse);
         expect(viewModel.turn.isWhite, isFalse);
+      });
+
+      test("should increment in fischer timing method", () {
+        var timeBeforeIncrement = viewModel.blackTimer.value.inSeconds;
+        viewModel.onPressedTimerButton(false);
+        var timeAfterIncrement = viewModel.blackTimer.value.inSeconds;
+
+        expect(
+            timeAfterIncrement,
+            equals(timeBeforeIncrement +
+                viewModel.timeControlBlack.incrementInSeconds));
       });
     });
 

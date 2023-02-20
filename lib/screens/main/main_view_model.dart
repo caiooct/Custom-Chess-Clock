@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/extensions/on_int.dart';
 import '../../data/time_control.dart';
+import '../../data/timing_methods_enum.dart';
 
 enum GameState {
   initial,
@@ -65,8 +66,30 @@ class MainViewModel extends ChangeNotifier {
     whiteTimer.value -= _decrement.ms;
   }
 
+  void _incrementWhiteTime() {
+    if (timeControlWhite.timingMethod == TimingMethodEnum.delay) {
+      // todo
+    }
+    if (timeControlWhite.timingMethod == TimingMethodEnum.bronstein) {
+      // todo
+    } else if (timeControlWhite.timingMethod == TimingMethodEnum.fischer) {
+      whiteTimer.value += timeControlWhite.incrementInSeconds.s;
+    }
+  }
+
   void _decrementBlackTime() {
     blackTimer.value -= _decrement.ms;
+  }
+
+  void _incrementBlackTime() {
+    if (timeControlWhite.timingMethod == TimingMethodEnum.delay) {
+      // todo
+    }
+    if (timeControlWhite.timingMethod == TimingMethodEnum.bronstein) {
+      // todo
+    } else if (timeControlWhite.timingMethod == TimingMethodEnum.fischer) {
+      blackTimer.value += timeControlBlack.incrementInSeconds.s;
+    }
   }
 
   void startGame() {
@@ -125,12 +148,14 @@ class MainViewModel extends ChangeNotifier {
 
   void _onPressedWhite() {
     if (turn.isWhite) {
+      _incrementWhiteTime();
       _switchTurns();
     }
   }
 
   void _onPressedBlack() {
     if (turn.isBlack) {
+      _incrementBlackTime();
       _switchTurns();
     }
   }

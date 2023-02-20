@@ -15,13 +15,13 @@ class MainScreen extends StatelessWidget {
   final viewModel = MainViewModel(
     const TimeControl(
       timeInSeconds: 60,
-      timingMethod: TimingMethodEnum.delay,
-      incrementInSeconds: 0,
+      timingMethod: TimingMethodEnum.fischer,
+      incrementInSeconds: 1,
     ),
     const TimeControl(
       timeInSeconds: 60,
-      timingMethod: TimingMethodEnum.delay,
-      incrementInSeconds: 0,
+      timingMethod: TimingMethodEnum.fischer,
+      incrementInSeconds: 1,
     ),
   );
 
