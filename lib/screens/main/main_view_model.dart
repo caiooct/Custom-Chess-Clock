@@ -6,7 +6,6 @@ import '../../common/extensions/on_int.dart';
 import '../../data/game_state_enum.dart';
 import '../../data/player_enum.dart';
 import '../../data/time_control.dart';
-import '../../data/timing_methods_enum.dart';
 
 class MainViewModel extends ChangeNotifier {
   late final ValueNotifier<Duration> whiteTimerNotifier;
@@ -41,19 +40,18 @@ class MainViewModel extends ChangeNotifier {
   MainViewModel(this.timeControlWhite, this.timeControlBlack) {
     whiteTimerNotifier = ValueNotifier(timeControlWhite.timeInSeconds.s);
     blackTimerNotifier = ValueNotifier(timeControlBlack.timeInSeconds.s);
-    if (timeControlWhite.timingMethod == TimingMethodEnum.delay) {
+    if (timeControlWhite.timingMethod.isDelay) {
       whiteDelayTimerNotifier =
           ValueNotifier(timeControlWhite.incrementInSeconds.s);
     }
-    if (timeControlBlack.timingMethod == TimingMethodEnum.delay) {
+    if (timeControlBlack.timingMethod.isDelay) {
       blackDelayTimerNotifier =
           ValueNotifier(timeControlBlack.incrementInSeconds.s);
     }
   }
 
   void _decrementWhiteTime() {
-    if (timeControlWhite.timingMethod == TimingMethodEnum.delay &&
-        whiteDelayTimer > 0.s) {
+    if (timeControlWhite.timingMethod.isDelay && whiteDelayTimer > 0.s) {
       whiteDelayTimerNotifier.value -= _decrement.ms;
     } else {
       whiteTimerNotifier.value -= _decrement.ms;
@@ -61,19 +59,18 @@ class MainViewModel extends ChangeNotifier {
   }
 
   void _incrementWhiteTime() {
-    if (timeControlWhite.timingMethod == TimingMethodEnum.delay) {
+    if (timeControlWhite.timingMethod.isDelay) {
       whiteDelayTimerNotifier.value = timeControlWhite.incrementInSeconds.s;
     }
-    if (timeControlWhite.timingMethod == TimingMethodEnum.bronstein) {
+    if (timeControlWhite.timingMethod.isBronstein) {
       // todo
-    } else if (timeControlWhite.timingMethod == TimingMethodEnum.fischer) {
+    } else if (timeControlWhite.timingMethod.isFischer) {
       whiteTimerNotifier.value += timeControlWhite.incrementInSeconds.s;
     }
   }
 
   void _decrementBlackTime() {
-    if (timeControlBlack.timingMethod == TimingMethodEnum.delay &&
-        blackDelayTimer > 0.s) {
+    if (timeControlBlack.timingMethod.isDelay && blackDelayTimer > 0.s) {
       blackDelayTimerNotifier.value -= _decrement.ms;
     } else {
       blackTimerNotifier.value -= _decrement.ms;
@@ -81,12 +78,12 @@ class MainViewModel extends ChangeNotifier {
   }
 
   void _incrementBlackTime() {
-    if (timeControlBlack.timingMethod == TimingMethodEnum.delay) {
+    if (timeControlBlack.timingMethod.isDelay) {
       blackDelayTimerNotifier.value = timeControlBlack.incrementInSeconds.s;
     }
-    if (timeControlBlack.timingMethod == TimingMethodEnum.bronstein) {
+    if (timeControlBlack.timingMethod.isBronstein) {
       // todo
-    } else if (timeControlBlack.timingMethod == TimingMethodEnum.fischer) {
+    } else if (timeControlBlack.timingMethod.isFischer) {
       blackTimerNotifier.value += timeControlBlack.incrementInSeconds.s;
     }
   }
@@ -119,10 +116,10 @@ class MainViewModel extends ChangeNotifier {
     countMovesBlackNotifier.value = 0;
     whiteTimerNotifier.value = timeControlWhite.timeInSeconds.s;
     blackTimerNotifier.value = timeControlBlack.timeInSeconds.s;
-    if (timeControlWhite.timingMethod == TimingMethodEnum.delay) {
+    if (timeControlWhite.timingMethod.isDelay) {
       whiteDelayTimerNotifier.value = timeControlWhite.incrementInSeconds.s;
     }
-    if (timeControlBlack.timingMethod == TimingMethodEnum.delay) {
+    if (timeControlBlack.timingMethod.isDelay) {
       blackDelayTimerNotifier.value = timeControlBlack.incrementInSeconds.s;
     }
     timer.cancel();
@@ -134,8 +131,10 @@ class MainViewModel extends ChangeNotifier {
       (_) {
         if (whiteTimer == Duration.zero || blackTimer == Duration.zero) {
           endGame();
-        } else if (gameState.isNotPaused) {
-          turn.isWhite ? _decrementWhiteTime() : _decrementBlackTime();
+        } else if (gameState.isRunning && turn.isWhite) {
+          _decrementWhiteTime();
+        } else if (gameState.isRunning && turn.isBlack) {
+          _decrementBlackTime();
         }
       },
     );
@@ -173,9 +172,9 @@ class MainViewModel extends ChangeNotifier {
   }
 
   bool shouldShowDelayTime(bool isAtBottom) {
-    if (isAtBottom && timeControlWhite.timingMethod == TimingMethodEnum.delay) {
+    if (isAtBottom && timeControlWhite.timingMethod.isDelay) {
       return true;
-    } else if (!isAtBottom && timeControlBlack.timingMethod == TimingMethodEnum.delay) {
+    } else if (!isAtBottom && timeControlBlack.timingMethod.isDelay) {
       return true;
     }
     return false;
