@@ -15,13 +15,13 @@ class MainScreen extends StatelessWidget {
   final viewModel = MainViewModel(
     const TimeControl(
       timeInSeconds: 60,
-      timingMethod: TimingMethodEnum.fischer,
-      incrementInSeconds: 1,
+      timingMethod: TimingMethodEnum.delay,
+      incrementInSeconds: 2,
     ),
     const TimeControl(
       timeInSeconds: 60,
-      timingMethod: TimingMethodEnum.fischer,
-      incrementInSeconds: 1,
+      timingMethod: TimingMethodEnum.delay,
+      incrementInSeconds: 2,
     ),
   );
 
@@ -90,18 +90,37 @@ class _TimerButton extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.center,
-                      child: ValueListenableBuilder(
-                        valueListenable: isAtBottom
-                            ? viewModel.whiteTimerNotifier
-                            : viewModel.blackTimerNotifier,
-                        builder: (_, value, __) {
-                          return Text(
-                            value.timeToString(),
-                            style: textTheme.displayLarge?.copyWith(
-                              color: onColor,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: isAtBottom
+                                ? viewModel.whiteTimerNotifier
+                                : viewModel.blackTimerNotifier,
+                            builder: (_, value, __) {
+                              return Text(
+                                value.timeToString(),
+                                style: textTheme.displayLarge?.copyWith(
+                                  color: onColor,
+                                ),
+                              );
+                            },
+                          ),
+                          if (viewModel.shouldShowDelayTime(isAtBottom))
+                            ValueListenableBuilder(
+                              valueListenable: isAtBottom
+                                  ? viewModel.whiteDelayTimerNotifier
+                                  : viewModel.blackDelayTimerNotifier,
+                              builder: (_, value, __) {
+                                return Text(
+                                  value.timeToString(),
+                                  style: textTheme.displayLarge?.copyWith(
+                                    color: onColor,
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                        ],
                       ),
                     ),
                     Align(
