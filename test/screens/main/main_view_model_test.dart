@@ -189,6 +189,187 @@ void main() {
     });
   });
 
+  group('Given timing method is Delay', () {
+    const int whiteTimeInSeconds = 5;
+    const int blackTimeInSeconds = 5;
+    const int incrementInSeconds = 2;
+    const Duration portionTimeUsed = Duration(milliseconds: 1100);
+    const Duration exceededTime = Duration(milliseconds: 3500);
+    setUp(() {
+      viewModel = MainViewModel(
+        const TimeControl(
+          timeInSeconds: whiteTimeInSeconds,
+          timingMethod: TimingMethodEnum.delay,
+          incrementInSeconds: incrementInSeconds,
+        ),
+        const TimeControl(
+          timeInSeconds: blackTimeInSeconds,
+          timingMethod: TimingMethodEnum.delay,
+          incrementInSeconds: incrementInSeconds,
+        ),
+      );
+    });
+
+    test('should restart to initial state', () {
+      viewModel.startGame();
+      viewModel.restartGame();
+      expect(viewModel.gameState, equals(GameState.initial));
+      expect(viewModel.countMovesWhite, equals(0));
+      expect(viewModel.countMovesBlack, equals(0));
+      expect(viewModel.whiteTimer, equals(viewModel.timeControlWhite.timeInSeconds.s));
+      expect(viewModel.blackTimer, equals(viewModel.timeControlBlack.timeInSeconds.s));
+      expect(viewModel.whiteDelayTimer, equals(viewModel.timeControlWhite.incrementInSeconds.s));
+      expect(viewModel.blackDelayTimer, equals(viewModel.timeControlBlack.incrementInSeconds.s));
+      expect(viewModel.timer.isActive, isFalse);
+    });
+
+    group("shouldShowDelayTime", () {
+      test("should return true to show delay timer for both players when both have incrementInSeconds greater than 0",
+          () {
+        viewModel = MainViewModel(
+          const TimeControl(
+            timeInSeconds: whiteTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: incrementInSeconds,
+          ),
+          const TimeControl(
+            timeInSeconds: blackTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: incrementInSeconds,
+          ),
+        );
+        var resultForWhite = viewModel.shouldShowDelayTime(true);
+        var resultForBlack = viewModel.shouldShowDelayTime(false);
+        expect(resultForWhite, isTrue);
+        expect(resultForBlack, isTrue);
+      });
+      test("should return true to show delay timer just for both White when Black's increment is 0", () {
+        viewModel = MainViewModel(
+          const TimeControl(
+            timeInSeconds: whiteTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: incrementInSeconds,
+          ),
+          const TimeControl(
+            timeInSeconds: blackTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: 0,
+          ),
+        );
+        var resultForWhite = viewModel.shouldShowDelayTime(true);
+        var resultForBlack = viewModel.shouldShowDelayTime(false);
+        expect(resultForWhite, isTrue);
+        expect(resultForBlack, isFalse);
+      });
+      test("should return true to show delay timer just for Black when White's timing method different from Delay", () {
+        viewModel = MainViewModel(
+          const TimeControl(
+            timeInSeconds: whiteTimeInSeconds,
+            timingMethod: TimingMethodEnum.fischer,
+            incrementInSeconds: incrementInSeconds,
+          ),
+          const TimeControl(
+            timeInSeconds: blackTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: incrementInSeconds,
+          ),
+        );
+        var resultForWhite = viewModel.shouldShowDelayTime(true);
+        var resultForBlack = viewModel.shouldShowDelayTime(false);
+        expect(resultForWhite, isFalse);
+        expect(resultForBlack, isTrue);
+      });
+      test("should return false to show delay timer just for both players when both have incrementInSeconds equal 0",
+          () {
+        viewModel = MainViewModel(
+          const TimeControl(
+            timeInSeconds: whiteTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: 0,
+          ),
+          const TimeControl(
+            timeInSeconds: blackTimeInSeconds,
+            timingMethod: TimingMethodEnum.delay,
+            incrementInSeconds: 0,
+          ),
+        );
+        var resultForWhite = viewModel.shouldShowDelayTime(true);
+        var resultForBlack = viewModel.shouldShowDelayTime(false);
+        expect(resultForWhite, isFalse);
+        expect(resultForBlack, isFalse);
+      });
+    });
+
+    group("Given White's turn", () {
+      group("Game is running", () {
+        test("should not count white timer when its delay timer is not finished", () {
+          fakeAsync((FakeAsync async) {
+            viewModel.startGame();
+            int timeBeforePlay = viewModel.whiteTimer.inMilliseconds;
+            async.elapse(portionTimeUsed);
+            expect(viewModel.whiteDelayTimer.inMilliseconds,
+                (viewModel.timeControlWhite.incrementInSeconds * 1000) - portionTimeUsed.inMilliseconds);
+            viewModel.onPressedTimerButton(true);
+            int timeAfterPlay = viewModel.whiteTimer.inMilliseconds;
+            expect(timeAfterPlay, equals(timeBeforePlay));
+          });
+        });
+
+        test("should count white timer when its delay timer is finished", () {
+          fakeAsync((FakeAsync async) {
+            viewModel.startGame();
+            int timeBeforePlay = viewModel.whiteTimer.inMilliseconds;
+            async.elapse(exceededTime);
+            expect(viewModel.whiteDelayTimer.inMilliseconds, equals(0));
+            viewModel.onPressedTimerButton(true);
+            int timeAfterPlay = viewModel.whiteTimer.inMilliseconds;
+            expect(
+                timeAfterPlay,
+                equals(timeBeforePlay -
+                    exceededTime.inMilliseconds +
+                    (viewModel.timeControlWhite.incrementInSeconds * 1000)));
+          });
+        });
+      });
+    });
+    group("Given Black's turn", () {
+      group("Game is running", () {
+        test("should not count black timer when its delay timer is not finished", () {
+          fakeAsync((FakeAsync async) {
+            viewModel.startGame();
+            viewModel.onPressedTimerButton(true);
+
+            int timeBeforePlay = viewModel.blackTimer.inMilliseconds;
+            async.elapse(portionTimeUsed);
+            expect(viewModel.blackDelayTimer.inMilliseconds,
+                (viewModel.timeControlWhite.incrementInSeconds * 1000) - portionTimeUsed.inMilliseconds);
+            viewModel.onPressedTimerButton(false);
+            int timeAfterPlay = viewModel.blackTimer.inMilliseconds;
+            expect(timeAfterPlay, equals(timeBeforePlay));
+          });
+        });
+
+        test("should count black timer when its delay timer is finished", () {
+          fakeAsync((FakeAsync async) {
+            viewModel.startGame();
+            viewModel.onPressedTimerButton(true);
+
+            int timeBeforePlay = viewModel.blackTimer.inMilliseconds;
+            async.elapse(exceededTime);
+            expect(viewModel.blackDelayTimer.inMilliseconds, equals(0));
+            viewModel.onPressedTimerButton(false);
+            int timeAfterPlay = viewModel.blackTimer.inMilliseconds;
+            expect(
+                timeAfterPlay,
+                equals(timeBeforePlay -
+                    exceededTime.inMilliseconds +
+                    (viewModel.timeControlWhite.incrementInSeconds * 1000)));
+          });
+        });
+      });
+    });
+  });
+
   group('Given timing method is Bronstein', () {
     const int whiteTimeInSeconds = 5;
     const int blackTimeInSeconds = 5;
