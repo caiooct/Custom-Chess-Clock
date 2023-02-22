@@ -172,9 +172,13 @@ class MainViewModel extends ChangeNotifier {
   }
 
   bool shouldShowDelayTime(bool isAtBottom) {
-    if (isAtBottom && timeControlWhite.timingMethod.isDelay) {
+    if (isAtBottom &&
+        timeControlWhite.timingMethod.isDelay &&
+        timeControlWhite.incrementInSeconds > 0) {
       return true;
-    } else if (!isAtBottom && timeControlBlack.timingMethod.isDelay) {
+    } else if (!isAtBottom &&
+        timeControlBlack.timingMethod.isDelay &&
+        timeControlBlack.incrementInSeconds > 0) {
       return true;
     }
     return false;
