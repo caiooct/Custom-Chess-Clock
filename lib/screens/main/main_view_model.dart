@@ -18,6 +18,7 @@ class MainViewModel extends ChangeNotifier {
   final turnNotifier = ValueNotifier(PlayerEnum.none);
   @visibleForTesting
   late Timer timer;
+  Duration _bronsteinTimer = Duration.zero;
 
   Duration get whiteTimer => whiteTimerNotifier.value;
 
@@ -52,10 +53,14 @@ class MainViewModel extends ChangeNotifier {
 
   void _decrementWhiteTime() {
     if (timeControlWhite.timingMethod.isDelay && whiteDelayTimer > 0.s) {
-      whiteDelayTimerNotifier.value -= _decrement.ms;
+      whiteDelayTimerNotifier.value -= _decrement;
+    } else if (timeControlWhite.timingMethod.isBronstein) {
+      _bronsteinTimer += _decrement;
+      whiteTimerNotifier.value -= _decrement;
     } else {
-      whiteTimerNotifier.value -= _decrement.ms;
+      whiteTimerNotifier.value -= _decrement;
     }
+    notifyListeners();
   }
 
   void _incrementWhiteTime() {
@@ -63,7 +68,11 @@ class MainViewModel extends ChangeNotifier {
       whiteDelayTimerNotifier.value = timeControlWhite.incrementInSeconds.s;
     }
     if (timeControlWhite.timingMethod.isBronstein) {
-      // todo
+      whiteTimerNotifier.value +=
+          _bronsteinTimer > timeControlWhite.incrementInSeconds.s
+              ? timeControlWhite.incrementInSeconds.s
+              : _bronsteinTimer;
+      _bronsteinTimer = Duration.zero;
     } else if (timeControlWhite.timingMethod.isFischer) {
       whiteTimerNotifier.value += timeControlWhite.incrementInSeconds.s;
     }
@@ -71,9 +80,12 @@ class MainViewModel extends ChangeNotifier {
 
   void _decrementBlackTime() {
     if (timeControlBlack.timingMethod.isDelay && blackDelayTimer > 0.s) {
-      blackDelayTimerNotifier.value -= _decrement.ms;
+      blackDelayTimerNotifier.value -= _decrement;
+    } else if (timeControlBlack.timingMethod.isBronstein) {
+      _bronsteinTimer += _decrement;
+      blackTimerNotifier.value -= _decrement;
     } else {
-      blackTimerNotifier.value -= _decrement.ms;
+      blackTimerNotifier.value -= _decrement;
     }
   }
 
@@ -82,7 +94,11 @@ class MainViewModel extends ChangeNotifier {
       blackDelayTimerNotifier.value = timeControlBlack.incrementInSeconds.s;
     }
     if (timeControlBlack.timingMethod.isBronstein) {
-      // todo
+      blackTimerNotifier.value +=
+          _bronsteinTimer > timeControlBlack.incrementInSeconds.s
+              ? timeControlBlack.incrementInSeconds.s
+              : _bronsteinTimer;
+      _bronsteinTimer = Duration.zero;
     } else if (timeControlBlack.timingMethod.isFischer) {
       blackTimerNotifier.value += timeControlBlack.incrementInSeconds.s;
     }
@@ -127,7 +143,7 @@ class MainViewModel extends ChangeNotifier {
 
   void _setUpTimer() {
     timer = Timer.periodic(
-      _decrement.ms,
+      _decrement,
       (_) {
         if (whiteTimer == Duration.zero || blackTimer == Duration.zero) {
           endGame();
@@ -184,5 +200,5 @@ class MainViewModel extends ChangeNotifier {
     return false;
   }
 
-  static const int _decrement = 100;
+  static const Duration _decrement = Duration(milliseconds: 100);
 }
