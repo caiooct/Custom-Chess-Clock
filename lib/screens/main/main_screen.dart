@@ -113,8 +113,8 @@ class _TimerButton extends StatelessWidget {
                                   : viewModel.blackDelayTimerNotifier,
                               builder: (_, value, __) {
                                 return Text(
-                                  value.timeToString(),
-                                  style: textTheme.displayLarge?.copyWith(
+                                  "delay: ${value.timeToAdaptiveString()}",
+                                  style: textTheme.displaySmall?.copyWith(
                                     color: onColor,
                                   ),
                                 );
