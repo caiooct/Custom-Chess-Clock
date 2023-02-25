@@ -1,5 +1,5 @@
 import '../../common/extensions/on_duration.dart';
-import '../time_control.dart';
+import 'time_control.dart';
 
 class Clock {
   String name;

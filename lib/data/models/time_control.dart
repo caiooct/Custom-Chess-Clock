@@ -1,4 +1,4 @@
-import 'timing_methods_enum.dart';
+import '../timing_methods_enum.dart';
 
 class TimeControl {
   final int timeInSeconds;
