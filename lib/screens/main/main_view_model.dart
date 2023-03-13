@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../common/extensions/on_int.dart';
 import '../../data/game_state_enum.dart';
+import '../../data/models/clock.dart';
 import '../../data/player_enum.dart';
-import '../../data/models/time_control.dart';
 
 class MainViewModel extends ChangeNotifier {
   late final ValueNotifier<Duration> whiteTimerNotifier;

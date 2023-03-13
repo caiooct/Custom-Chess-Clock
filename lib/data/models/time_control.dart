@@ -1,13 +1,15 @@
-import '../timing_methods_enum.dart';
+part of 'clock.dart';
 
+@embedded
 class TimeControl {
   final int timeInSeconds;
+  @enumerated
   final TimingMethodEnum timingMethod;
   final int incrementInSeconds;
 
   const TimeControl({
-    required this.timeInSeconds,
-    required this.timingMethod,
-    required this.incrementInSeconds,
+    this.timeInSeconds = 0,
+    this.timingMethod = TimingMethodEnum.fischer,
+    this.incrementInSeconds = 0,
   });
 }

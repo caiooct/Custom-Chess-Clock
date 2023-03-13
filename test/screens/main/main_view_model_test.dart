@@ -4,7 +4,7 @@
 
 import 'package:custom_chess_clock/common/extensions/on_int.dart';
 import 'package:custom_chess_clock/data/game_state_enum.dart';
-import 'package:custom_chess_clock/data/models/time_control.dart';
+import 'package:custom_chess_clock/data/models/clock.dart';
 import 'package:custom_chess_clock/data/timing_methods_enum.dart';
 import 'package:custom_chess_clock/screens/main/main_view_model.dart';
 import 'package:fake_async/fake_async.dart';
