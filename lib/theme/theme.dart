@@ -19,4 +19,15 @@ final ThemeData lightTheme = ThemeData(
     inversePrimary: inversePrimary,
     primaryContainer: primaryContainer,
   ),
+  dialogTheme: DialogTheme(
+    backgroundColor: primaryContainer,
+    titleTextStyle: ThemeData.fallback(useMaterial3: true)
+        .textTheme
+        .headlineSmall
+        ?.copyWith(color: onPrimary, fontSize: 24),
+    contentTextStyle: ThemeData.fallback(useMaterial3: true)
+        .textTheme
+        .bodyMedium
+        ?.copyWith(color: onPrimary),
+  ),
 );
