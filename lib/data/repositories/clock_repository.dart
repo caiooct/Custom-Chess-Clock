@@ -27,4 +27,8 @@ class ClockRepository {
   Stream<List<Clock>> getAllListenable() {
     return _dataSource.getAllListenable();
   }
+
+  Future<void> deleteClocks(List<Clock> clocks) {
+    return _dataSource.deleteAll(clocks);
+  }
 }

@@ -9,6 +9,8 @@ abstract class IClockDataSource {
 
   Future<void> delete(Clock clock);
 
+  Future<void> deleteAll(List<Clock> clocks);
+
   Future<int> insert(Clock clock);
 
   int insertSync(Clock clock);
@@ -36,6 +38,14 @@ class ClockLocalDataSource implements IClockDataSource {
   }
 
   @override
+  Future<void> deleteAll(List<Clock> clocks) async {
+    final collection = isar.clocks;
+    collection.isar.writeTxn(() async {
+      await collection.deleteAll(clocks.map((e) => e.id).toList());
+    });
+  }
+
+  @override
   Future<int> insert(Clock clock) async {
     final collection = isar.clocks;
     return isar.writeTxn(() => collection.put(clock));
@@ -58,7 +68,8 @@ class ClockLocalDataSource implements IClockDataSource {
   @override
   Stream<List<Clock>> getAllListenable() async* {
     final collection = isar.clocks;
-    await for (final results in collection.where().build().watch(fireImmediately: true)) {
+    await for (final results
+        in collection.where().build().watch(fireImmediately: true)) {
       yield results;
     }
   }
