@@ -89,7 +89,9 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
 }
 
 class _ClockCard extends StatelessWidget {
-  const _ClockCard({Key? key}) : super(key: key);
+  const _ClockCard({required this.clock});
+
+  final Clock clock;
 
   @override
   Widget build(BuildContext context) {
@@ -106,10 +108,12 @@ class _ClockCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Bullet",
+                clock.name,
                 style: textTheme.headlineLarge?.copyWith(
                   color: colorScheme.onPrimary,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
               Divider(
                 thickness: 2,
@@ -118,10 +122,12 @@ class _ClockCard extends StatelessWidget {
                 endIndent: 64,
               ),
               Text(
-                "5 | 1",
-                style: textTheme.headlineLarge?.copyWith(
+                clock.toClockLabel(),
+                style: textTheme.headlineMedium?.copyWith(
                   color: colorScheme.onPrimary,
                 ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
               ),
             ],
           ),
