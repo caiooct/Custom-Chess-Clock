@@ -32,4 +32,14 @@ class Clock {
   String toString() {
     return 'Clock{name: $name, white: $white, black: $black}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Clock &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
+
+  @override
+  int get hashCode => name.hashCode;
 }
