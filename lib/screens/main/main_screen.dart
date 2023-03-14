@@ -6,7 +6,7 @@ import '../../common/extensions/on_duration.dart';
 import '../../common/extensions/on_string.dart';
 import '../../data/models/clock.dart';
 import '../../data/timing_methods_enum.dart';
-import '../clocks_list_screen.dart';
+import '../clocks_list/clocks_list_screen.dart';
 import 'main_view_model.dart';
 
 class MainScreen extends StatelessWidget {
