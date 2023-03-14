@@ -12,18 +12,6 @@ class ClocksListViewModel extends ChangeNotifier {
     await _repository.deleteClock(clock);
   }
 
-  Future<void> insertClock(Clock clock) async {
-    await _repository.insertClock(clock);
-  }
-
-  int insertSyncClock(Clock clock) {
-    return _repository.insertSyncClock(clock);
-  }
-
-  Future<void> updateClock(Clock clock) async {
-    await _repository.updateClock(clock);
-  }
-
   Stream<List<Clock>> getListenableClocksList() {
     return _repository.getAllListenable();
   }

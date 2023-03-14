@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'new_clock/new_clock_screen.dart';
-import 'settings_screen.dart';
+import '../../common/services/isar_service.dart';
+import '../../data/data_sources/clock_local_data_source.dart';
+import '../../data/models/clock.dart';
+import '../../data/repositories/clock_repository.dart';
+import '../new_clock/new_clock_screen.dart';
+import '../settings_screen.dart';
+import 'clocks_list_view_model.dart';
 
 class ClocksListScreen extends StatefulWidget {
   const ClocksListScreen({Key? key}) : super(key: key);
@@ -12,6 +17,10 @@ class ClocksListScreen extends StatefulWidget {
 }
 
 class _ClocksListScreenState extends State<ClocksListScreen> {
+  final viewModel = ClocksListViewModel(
+    ClockRepository(ClockLocalDataSource(IsarService.instance)),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -78,10 +87,22 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: const [
-            _ClockCard(),
-          ],
+        child: StreamBuilder<List<Clock>>(
+          stream: viewModel.getListenableClocksList(),
+          builder: (_, snapshot) {
+            if (snapshot.hasData) {
+              return Wrap(
+                spacing: 16.0,
+                children: snapshot.data!
+                    .map((clock) => _ClockCard(clock: clock))
+                    .toList(),
+              );
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else {
+              return const SizedBox();
+            }
+          },
         ),
       ),
     );
