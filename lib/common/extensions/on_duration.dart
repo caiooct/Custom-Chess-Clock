@@ -14,4 +14,22 @@ extension OnDuration on Duration {
     }
     return toString().substring(startIndex, 7);
   }
+
+  String timeToClockLabel() {
+    String result = "";
+    var copy = this;
+    if (copy.inHours > 0) {
+      result += "${copy.inHours}h";
+      copy -= Duration(hours: copy.inHours);
+    }
+    if (copy.inMinutes > 0) {
+      result += "${copy.inMinutes}m";
+      copy -= Duration(minutes: copy.inMinutes);
+    }
+    if (copy.inSeconds > 0) {
+      result += "${copy.inSeconds}s";
+      copy -= Duration(seconds: copy.inSeconds);
+    }
+    return result;
+  }
 }
