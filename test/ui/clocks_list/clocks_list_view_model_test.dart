@@ -1,5 +1,5 @@
 import "package:custom_chess_clock/data/repositories/clock_repository.dart";
-import "package:custom_chess_clock/screens/clocks_list/clocks_list_view_model.dart";
+import "package:custom_chess_clock/ui/clocks_list/clocks_list_view_model.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mocktail/mocktail.dart";
 
