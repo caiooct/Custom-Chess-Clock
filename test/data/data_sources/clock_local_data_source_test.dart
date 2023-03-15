@@ -1,6 +1,6 @@
 import 'package:custom_chess_clock/data/data_sources/clock_local_data_source.dart';
 import 'package:custom_chess_clock/data/models/clock.dart';
-import 'package:custom_chess_clock/data/timing_methods_enum.dart';
+import 'package:custom_chess_clock/data/enums/timing_methods_enum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:isar/isar.dart';
 import 'package:mocktail/mocktail.dart';

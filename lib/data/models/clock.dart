@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 
 import '../../common/extensions/on_duration.dart';
-import '../timing_methods_enum.dart';
+import '../enums/timing_methods_enum.dart';
 
 part 'clock.g.dart';
 

@@ -3,9 +3,9 @@
 /// NOTE: THIS FILE IS FORMATED WITH LINE LENGTH: 120
 
 import 'package:custom_chess_clock/common/extensions/on_int.dart';
-import 'package:custom_chess_clock/data/game_state_enum.dart';
+import 'package:custom_chess_clock/data/enums/game_state_enum.dart';
 import 'package:custom_chess_clock/data/models/clock.dart';
-import 'package:custom_chess_clock/data/timing_methods_enum.dart';
+import 'package:custom_chess_clock/data/enums/timing_methods_enum.dart';
 import 'package:custom_chess_clock/screens/main/main_view_model.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';

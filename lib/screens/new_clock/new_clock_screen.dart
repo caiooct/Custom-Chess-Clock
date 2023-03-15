@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../data/timing_methods_enum.dart';
+import '../../data/enums/timing_methods_enum.dart';
 
 part './widgets/_timer_input_widget.dart';
 

@@ -1,5 +1,5 @@
 import 'package:custom_chess_clock/data/models/clock.dart';
-import 'package:custom_chess_clock/data/timing_methods_enum.dart';
+import 'package:custom_chess_clock/data/enums/timing_methods_enum.dart';
 
 final blitzClock = Clock.sec(
   id: 1,
