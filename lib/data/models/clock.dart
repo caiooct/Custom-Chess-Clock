@@ -16,7 +16,7 @@ class Clock {
 
   Clock();
 
-  Clock.sec(this.name, this.white, this.black);
+  Clock.sec(this.name, this.white, this.black, {this.id = Isar.autoIncrement});
 
   String toClockLabel() {
     String result = "";
@@ -30,15 +30,13 @@ class Clock {
 
   @override
   String toString() {
-    return 'Clock{name: $name, white: $white, black: $black}';
+    return 'Clock{id:$id, name: $name, white: $white, black: $black}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Clock &&
-              runtimeType == other.runtimeType &&
-              id == other.id;
+      other is Clock && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => name.hashCode;
