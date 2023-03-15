@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../../common/services/isar_service.dart';
 import '../../data/data_sources/clock_local_data_source.dart';
@@ -35,18 +36,93 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dialogTheme = Theme.of(context).dialogTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        leading: BackButton(color: colorScheme.onPrimary),
+        leading: BackButton(
+          color: colorScheme.onPrimary,
+          onPressed: () {
+            if (viewModel.shouldShowSelectedCount) {
+              viewModel.clearSelectedClocksList();
+            } else {
+              Navigator.of(context).pop();
+            }
+            setState(() {});
+          },
+        ),
         title: Text(
-          "Clocks",
+          viewModel.shouldShowSelectedCount
+              ? "${viewModel.selectedClocksCount}"
+              : "Clocks",
           style: textTheme.titleLarge?.copyWith(color: colorScheme.onPrimary),
         ),
         backgroundColor: colorScheme.primary,
         actions: [
+          if (viewModel.shouldShowEditIconAndStartGameFAB)
+            IconButton(
+              onPressed: () {
+                // TODO: IMPLEMENT
+              },
+              icon: Icon(
+                Icons.edit,
+                color: colorScheme.onPrimary,
+              ),
+            ),
+          if (viewModel.shouldShowDeleteIcon)
+            IconButton(
+              onPressed: () async {
+                bool response = await showDialog<bool>(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          title: Text(
+                            Intl.plural(
+                              viewModel.selectedClocksCount,
+                              other:
+                                  "Delete ${viewModel.selectedClocksCount} selected clocks?",
+                              one: "Delete this clock?",
+                            ),
+                            style: dialogTheme.titleTextStyle,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                              child: Text(
+                                "No",
+                                style: textTheme.labelLarge
+                                    ?.copyWith(color: colorScheme.onPrimary),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                              child: Text(
+                                "Yes",
+                                style: textTheme.labelLarge
+                                    ?.copyWith(color: colorScheme.onPrimary),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ) ??
+                    false;
+                if (response) {
+                  await viewModel.onTapDelete();
+                  setState(() {});
+                }
+              },
+              icon: Icon(
+                Icons.delete_outline,
+                color: colorScheme.onPrimary,
+              ),
+            ),
           IconButton(
             onPressed: () async {
               Navigator.of(context).push(
@@ -58,33 +134,29 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
               color: colorScheme.onPrimary,
             ),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.delete_outline,
-              color: colorScheme.onPrimary,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.edit,
-              color: colorScheme.onPrimary,
-            ),
-          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: colorScheme.primaryContainer,
-        label: const Text("New Clock"),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const NewClockScreen()),
-          );
-        },
-        tooltip: 'New Clock',
-        icon: const Icon(Icons.add),
-      ),
+      floatingActionButton: viewModel.shouldShowEditIconAndStartGameFAB
+          ? FloatingActionButton.extended(
+              backgroundColor: colorScheme.primaryContainer,
+              label: const Text("Start Game"),
+              onPressed: () {
+                // TODO: IMPLEMENT
+              },
+              tooltip: 'Start Game',
+              icon: const Icon(Icons.play_arrow_outlined),
+            )
+          : FloatingActionButton.extended(
+              backgroundColor: colorScheme.primaryContainer,
+              label: const Text("New Clock"),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const NewClockScreen()),
+                );
+              },
+              tooltip: 'New Clock',
+              icon: const Icon(Icons.add),
+            ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Clock>>(
@@ -94,7 +166,17 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
               return Wrap(
                 spacing: 16.0,
                 children: snapshot.data!
-                    .map((clock) => _ClockCard(clock: clock))
+                    .map(
+                      (clock) => _ClockCard(
+                        clock: clock,
+                        isSelected: viewModel.isSelected(clock),
+                        onTap: () {
+                          setState(() {
+                            viewModel.onTapClockCard(clock);
+                          });
+                        },
+                      ),
+                    )
                     .toList(),
               );
             } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -110,42 +192,55 @@ class _ClocksListScreenState extends State<ClocksListScreen> {
 }
 
 class _ClockCard extends StatelessWidget {
-  const _ClockCard({required this.clock});
+  const _ClockCard({
+    required this.clock,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   final Clock clock;
+  final bool isSelected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     return SizedBox(
+      key: Key("ClockCard${clock.id}"),
       width: 168,
       height: 168,
       child: Card(
-        color: colorScheme.primary,
+        color: isSelected ? colorScheme.inversePrimary : colorScheme.primary,
         child: InkWell(
-          onTap: () {},
+          onTap: onTap,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 clock.name,
                 style: textTheme.headlineLarge?.copyWith(
-                  color: colorScheme.onPrimary,
+                  color: isSelected
+                      ? colorScheme.primaryContainer
+                      : colorScheme.onPrimary,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
               Divider(
                 thickness: 2,
-                color: colorScheme.onPrimary,
+                color: isSelected
+                    ? colorScheme.primaryContainer
+                    : colorScheme.onPrimary,
                 indent: 64,
                 endIndent: 64,
               ),
               Text(
                 clock.toClockLabel(),
                 style: textTheme.headlineMedium?.copyWith(
-                  color: colorScheme.onPrimary,
+                  color: isSelected
+                      ? colorScheme.primaryContainer
+                      : colorScheme.onPrimary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
