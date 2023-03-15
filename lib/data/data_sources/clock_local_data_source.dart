@@ -40,7 +40,7 @@ class ClockLocalDataSource implements IClockDataSource {
   @override
   Future<void> deleteAll(List<Clock> clocks) async {
     final collection = isar.clocks;
-    collection.isar.writeTxn(() async {
+    return collection.isar.writeTxn(() async {
       await collection.deleteAll(clocks.map((e) => e.id).toList());
     });
   }
