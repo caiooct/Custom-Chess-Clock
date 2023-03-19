@@ -12,8 +12,8 @@ class ClockRepository {
     await _dataSource.delete(clock);
   }
 
-  Future<void> insertClock(Clock clock) async {
-    await _dataSource.insert(clock);
+  Future<int> insertClock(Clock clock) async {
+    return _dataSource.insert(clock);
   }
 
   int insertSyncClock(Clock clock)  {
