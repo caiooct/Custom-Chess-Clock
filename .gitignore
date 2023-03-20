@@ -9,6 +9,7 @@
 .history
 .svn/
 migrate_working_dir/
+/coverage/
 
 # IntelliJ related
 *.iml
@@ -31,6 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/libisar.dylib
 
 # Symbolication related
 app.*.symbols
@@ -42,4 +44,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/coverage/lcov.info
