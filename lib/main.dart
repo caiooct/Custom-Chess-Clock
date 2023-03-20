@@ -1,14 +1,17 @@
-import 'package:custom_chess_clock/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'ui/main/main_screen.dart';
+import 'theme/theme.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(
     MaterialApp(
       title: 'Custom Chess Clock',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const SplashScreen(),
+      theme: lightTheme,
+      home: MainScreen(),
     ),
   );
 }
