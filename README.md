@@ -4,7 +4,7 @@ This app is a digital chess clock that allows you to customize your clock's setu
 
 ## Note
 
-This project is still a work in progress and may contain bugs or incomplete features. Please use at your own risk.
+This project is still a work in progress and may contain bugs or incomplete features.
 
 ## Features
 
