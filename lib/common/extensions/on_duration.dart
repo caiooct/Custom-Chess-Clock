@@ -32,4 +32,16 @@ extension OnDuration on Duration {
     }
     return result;
   }
+
+  int get hours => inHours;
+
+  int get minutes {
+    int totalMinutes = inSeconds ~/ 60;
+    int minutes = totalMinutes % 60;
+    return minutes;
+  }
+  int get seconds {
+    int seconds = inSeconds % 60;
+    return seconds;
+  }
 }
